@@ -22,6 +22,8 @@ Servicio basado en Kogito y Spring Boot para gestionar evaluaciones neurológica
 5. El practicante completa la evaluación DN4 a través de la API REST
 6. El proceso finaliza registrando la evaluación completada
 
+![Diagrama del proceso BPMN](docs/images/process.png)
+
 ## Usuarios y roles configurados
 
 El servicio incluye una configuración de seguridad con los siguientes usuarios:
