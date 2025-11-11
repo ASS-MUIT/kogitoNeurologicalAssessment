@@ -1,0 +1,16 @@
+{
+    // Usar IntelliSense para aprender sobre los atributos posibles.
+    // Pasa el ratón sobre los nombres de los atributos para ver las descripciones.
+    // Para más información, visita: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Kogito Debug (Maven - Attach)",
+            "request": "attach",
+            // Puerto predeterminado que usa Spring Boot para la depuración remota
+            "hostName": "localhost",
+            "port": 5005
+        }
+    ]
+}
