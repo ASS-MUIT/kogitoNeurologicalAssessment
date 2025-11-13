@@ -312,10 +312,10 @@
         });
 
         function promptCredentials() {
-            const username = prompt('Enter username:', 'doctorWho');
+            const username = prompt('Enter username:');
             if (!username) return;
             
-            const password = prompt('Enter password:', 'doctorWho');
+            const password = prompt('Enter password:');
             if (!password) return;
 
             saveCredentials(username, password);
@@ -408,9 +408,6 @@
                     <button class="btn-complete" onclick="openTask('${task.processInstanceId}', '${task.id}')">
                         📝 Complete Assessment
                     </button>
-                    <button class="btn-complete" onclick="viewProcessDiagram('${task.processInstanceId}')" style="background: #17a2b8; margin-left: 10px;">
-                        📊 View Diagram
-                    </button>
                 `;
 
                 container.appendChild(taskCard);
@@ -419,10 +416,6 @@
 
         function openTask(processInstanceId, taskId) {
             window.location.href = `/task-form.html?processInstanceId=${processInstanceId}&taskId=${taskId}`;
-        }
-
-        function viewProcessDiagram(processInstanceId) {
-            window.location.href = `/process-diagram.html?processInstanceId=${processInstanceId}`;
         }
 
         function showError(message) {
