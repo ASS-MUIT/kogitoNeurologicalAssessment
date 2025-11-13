@@ -96,6 +96,12 @@
             <artifactId>kogito-addons-springboot-events-process-kafka</artifactId>
             <version>${kogito.version}</version>
         </dependency>
+        <!-- GESTIÓN DE TAREAS DE USUARIO -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-addons-springboot-task-management</artifactId>
+            <version>${kogito.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-addons-springboot-messaging</artifactId>

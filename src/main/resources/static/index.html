@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurological Assessment System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-text h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .welcome-text p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .menu-item-icon {
+            font-size: 32px;
+            margin-right: 20px;
+        }
+
+        .menu-item-content h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .menu-item-content p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .menu-item {
+                padding: 15px;
+            }
+
+            .menu-item-icon {
+                font-size: 24px;
+                margin-right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Neurological Assessment</h1>
+            <p>DN4 Pain Assessment System</p>
+        </div>
+
+        <div class="content">
+            <div class="welcome-text">
+                <h2>Welcome</h2>
+                <p>This system helps healthcare professionals assess and manage neuropathic pain using the DN4 (Douleur Neuropathique 4 Questions) questionnaire.</p>
+            </div>
+
+            <div class="menu">
+                <a href="/task-list.html" class="menu-item">
+                    <div class="menu-item-icon">📋</div>
+                    <div class="menu-item-content">
+                        <h3>My Tasks</h3>
+                        <p>View and complete assigned pain assessments</p>
+                    </div>
+                </a>
+
+                <a href="/swagger-ui.html" class="menu-item">
+                    <div class="menu-item-icon">🔧</div>
+                    <div class="menu-item-content">
+                        <h3>API Documentation</h3>
+                        <p>Explore the REST API with Swagger UI</p>
+                    </div>
+                </a>
+
+                <a href="/q/dev" class="menu-item" style="display: none;">
+                    <div class="menu-item-icon">⚙️</div>
+                    <div class="menu-item-content">
+                        <h3>Dev Console</h3>
+                        <p>Development and debugging tools</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Neurological Assessment System v1.0</p>
+            <p>Kogito Business Automation Platform</p>
+        </div>
+    </div>
+</body>
+</html>

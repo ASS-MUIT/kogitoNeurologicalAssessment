@@ -28,11 +28,15 @@ Servicio basado en Kogito y Spring Boot para gestionar evaluaciones neurológica
 
 El servicio incluye una configuración de seguridad con los siguientes usuarios:
 
-| Usuario    | Contraseña | Rol/Grupo      | Descripción                                    |
-|------------|------------|----------------|------------------------------------------------|
-| doctorWho  | doctorWho  | practitioner   | Practicante médico autorizado para evaluaciones|
-| paul       | paul       | practitioner   | Practicante médico autorizado para evaluaciones|
-| mary       | mary       | patient        | Paciente del sistema                           |
+| Usuario    | Contraseña | Grupo/Autoridad | Descripción                                    |
+|------------|------------|-----------------|------------------------------------------------|
+| doctorWho  | doctorWho  | practitioner    | Practicante médico autorizado para evaluaciones|
+| paul       | paul       | practitioner    | Practicante médico autorizado para evaluaciones|
+| mary       | mary       | patient         | Paciente del sistema                           |
+
+**Nota importante**: Los usuarios están configurados con `.authorities()` en lugar de `.roles()` para que coincidan con los `GroupId` del BPMN sin el prefijo `ROLE_`.
+
+Para más detalles sobre el uso de la API de tareas, consulta [TASK_API_USAGE.md](docs/TASK_API_USAGE.md).
 
 ## Infraestructura requerida
 
@@ -93,11 +97,19 @@ Puedes consultar la [definición OpenAPI](http://localhost:8080/v3/api-docs) gen
 
 ### Endpoints principales
 
+#### Gestión de Procesos
 * `GET /assessment` - Listar instancias de proceso
 * `POST /assessment` - Crear nueva instancia de proceso
 * `GET /assessment/{processId}` - Obtener detalles de una instancia
-* `GET /assessment/{processId}/tasks` - Obtener tareas de una instancia
-* `POST /assessment/{processId}/Assessment/{taskId}` - Completar tarea de evaluación DN4
+* `DELETE /assessment/{processId}` - Cancelar instancia de proceso
+
+#### Gestión de Tareas
+* `GET /assessment/tasks` - Obtener todas las tareas del usuario autenticado
+* `GET /assessment/{processId}/tasks` - Obtener tareas de una instancia específica
+* `GET /assessment/{processId}/painAssessment/{taskId}` - Obtener detalles de una tarea
+* `POST /assessment/{processId}/painAssessment/{taskId}` - Completar tarea de evaluación DN4
+
+📖 **Documentación completa de la API de tareas**: Ver [TASK_API_USAGE.md](docs/TASK_API_USAGE.md)
 
 ## Uso del servicio
 
@@ -136,16 +148,22 @@ One-liner:
 
 ### 3. Consultar las tareas pendientes
 
-Lista las instancias de proceso:
+**Opción 1: Todas las tareas del usuario autenticado** (recomendado)
+
+```sh
+curl -u doctorWho:doctorWho http://localhost:8080/assessment/tasks
+```
+
+**Opción 2: Listar instancias de proceso primero**
 
 ```sh
 curl -u doctorWho:doctorWho http://localhost:8080/assessment
 ```
 
-Obtén las tareas para un practicante:
+Luego obtén las tareas de una instancia específica:
 
 ```sh
-curl -u doctorWho:doctorWho 'http://localhost:8080/assessment/{processId}/tasks?user=doctorWho&group=practitioner'
+curl -u doctorWho:doctorWho http://localhost:8080/assessment/{processId}/tasks
 ```
 
 ### 4. Completar una evaluación DN4
@@ -154,22 +172,50 @@ Completa la tarea de evaluación proporcionando los datos del cuestionario DN4:
 
 ```sh
 curl -u doctorWho:doctorWho -X POST \
-  'http://localhost:8080/assessment/{processId}/Assessment/{taskId}' \
+  http://localhost:8080/assessment/{processId}/painAssessment/{taskId} \
   -H 'Content-Type: application/json' \
   -d '{
     "dn4": {
-      "question1": true,
-      "question2": false,
-      "question3": true,
-      "question4": false,
-      "question5": true,
-      "question6": false,
-      "question7": true,
-      "question8": false,
-      "question9": true,
-      "question10": false
+      "burning": true,
+      "painfulCold": false,
+      "electricShocks": true,
+      "tingling": true,
+      "pinsPricks": false,
+      "numbness": true,
+      "itching": false,
+      "hypoesthesiaTouch": true,
+      "hypoesthesiaPinprick": false,
+      "brushingAllodynia": true
     }
   }'
+```
+
+**En PowerShell:**
+
+```powershell
+$credentials = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("doctorWho:doctorWho"))
+$body = @{
+    dn4 = @{
+        burning = $true
+        painfulCold = $false
+        electricShocks = $true
+        tingling = $true
+        pinsPricks = $false
+        numbness = $true
+        itching = $false
+        hypoesthesiaTouch = $true
+        hypoesthesiaPinprick = $false
+        brushingAllodynia = $true
+    }
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:8080/assessment/{processId}/painAssessment/{taskId}" `
+  -Method POST `
+  -Headers @{
+      Authorization="Basic $credentials"
+      "Content-Type"="application/json"
+  } `
+  -Body $body
 ```
 
 ## Estructura del proyecto
@@ -206,3 +252,5 @@ curl -u doctorWho:doctorWho -X POST \
 * El servicio implementa un `IdentityProvider` personalizado para mapear correctamente los roles de Spring Security a grupos de Kogito
 * Las tareas están asignadas al grupo `practitioner`, permitiendo que cualquier usuario con ese rol pueda completarlas
 * La evaluación DN4 (Douleur Neuropathique 4) es un cuestionario clínico para evaluar dolor neuropático
+* **Importante**: Los usuarios están configurados con `.authorities()` en lugar de `.roles()` para evitar el prefijo `ROLE_` que añade Spring Security
+* El addon `kogito-addons-springboot-task-management` está incluido para habilitar los endpoints REST de gestión de tareas

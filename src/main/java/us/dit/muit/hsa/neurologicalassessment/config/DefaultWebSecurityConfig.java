@@ -30,9 +30,19 @@ public class DefaultWebSecurityConfig {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("doctorWho").password("doctorWho").roles("practitioner");
-        auth.inMemoryAuthentication().withUser("mary").password("mary").roles("patient");
-        auth.inMemoryAuthentication().withUser("paul").password("paul").roles("practitioner");
+        // Nota: En Kogito, los grupos (GroupId) no llevan el prefijo ROLE_
+        // Por eso usamos .authorities() en lugar de .roles()
+        auth.inMemoryAuthentication()
+            .withUser("doctorWho").password("doctorWho")
+            .authorities("practitioner");
+        
+        auth.inMemoryAuthentication()
+            .withUser("mary").password("mary")
+            .authorities("patient");
+        
+        auth.inMemoryAuthentication()
+            .withUser("paul").password("paul")
+            .authorities("practitioner");
     }
 
     @Bean

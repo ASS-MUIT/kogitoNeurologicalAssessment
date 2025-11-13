@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks - Neurological Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info strong {
+            color: #667eea;
+        }
+
+        .btn-refresh {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .tasks-container {
+            margin-top: 20px;
+        }
+
+        .task-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .task-card:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .task-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .task-status {
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .task-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .task-detail {
+            display: flex;
+            align-items: center;
+        }
+
+        .task-detail strong {
+            margin-right: 5px;
+            color: #333;
+        }
+
+        .btn-complete {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .login-prompt {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .login-prompt button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .task-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>My Tasks</h1>
+            <p>Neurological Assessment - Task Management</p>
+        </div>
+
+        <div class="content">
+            <div class="user-info">
+                <div>
+                    <strong>User:</strong> <span id="currentUser">Not logged in</span><br>
+                    <strong>Roles:</strong> <span id="userRoles">-</span><br>
+                    <strong>Total Tasks:</strong> <span id="taskCount">0</span>
+                </div>
+                <div>
+                    <button class="btn-refresh" onclick="loadTasks()">🔄 Refresh</button>
+                    <button class="btn-refresh" onclick="logout()" style="background: #dc3545; margin-left: 10px;">🚪 Logout</button>
+                </div>
+            </div>
+
+            <div id="loginPrompt" class="login-prompt" style="display: none;">
+                <h3>Authentication Required</h3>
+                <p>Please enter your credentials to view your tasks.</p>
+                <button onclick="promptCredentials()">Login</button>
+            </div>
+
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                <p>Loading tasks...</p>
+            </div>
+
+            <div id="tasksContainer" class="tasks-container" style="display: none;"></div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h3>No Tasks Available</h3>
+                <p>You don't have any pending tasks at the moment.</p>
+            </div>
+
+            <div id="errorMessage" class="error" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check if credentials are stored in sessionStorage
+        function getCredentials() {
+            return sessionStorage.getItem('authCredentials');
+        }
+
+        function saveCredentials(username, password) {
+            const credentials = btoa(username + ':' + password);
+            sessionStorage.setItem('authCredentials', credentials);
+            sessionStorage.setItem('username', username);
+            return credentials;
+        }
+
+        // Try to load tasks on page load
+        window.addEventListener('load', function() {
+            const storedCredentials = getCredentials();
+            if (storedCredentials) {
+                // Already authenticated, load tasks directly
+                loadTasks();
+            } else {
+                // Need to authenticate
+                promptCredentials();
+            }
+        });
+
+        function promptCredentials() {
+            const username = prompt('Enter username:', 'doctorWho');
+            if (!username) return;
+            
+            const password = prompt('Enter password:', 'doctorWho');
+            if (!password) return;
+
+            saveCredentials(username, password);
+            document.getElementById('loginPrompt').style.display = 'none';
+            loadTasks();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('authCredentials');
+            sessionStorage.removeItem('username');
+            document.getElementById('loginPrompt').style.display = 'block';
+            document.getElementById('tasksContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        async function loadTasks() {
+            const credentials = getCredentials();
+            if (!credentials) {
+                document.getElementById('loginPrompt').style.display = 'block';
+                document.getElementById('loadingIndicator').style.display = 'none';
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('tasksContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+
+            try {
+                const response = await fetch('/assessment/tasks', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Basic ' + credentials
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tasks: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                // Hide loading
+                document.getElementById('loadingIndicator').style.display = 'none';
+
+                // Update user info
+                document.getElementById('currentUser').textContent = data.userName || 'Unknown';
+                document.getElementById('userRoles').textContent = (data.userRoles || []).join(', ') || 'None';
+                document.getElementById('taskCount').textContent = data.totalTasks || 0;
+
+                // Display tasks
+                if (data.tasks && data.tasks.length > 0) {
+                    displayTasks(data.tasks);
+                } else {
+                    document.getElementById('emptyState').style.display = 'block';
+                }
+
+            } catch (error) {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                showError('Error loading tasks: ' + error.message);
+            }
+        }
+
+        function displayTasks(tasks) {
+            const container = document.getElementById('tasksContainer');
+            container.innerHTML = '';
+            container.style.display = 'block';
+
+            tasks.forEach(task => {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card';
+                
+                taskCard.innerHTML = `
+                    <div class="task-header">
+                        <div class="task-name">${task.name || 'Unnamed Task'}</div>
+                        <div class="task-status">${task.phaseStatus || 'Active'}</div>
+                    </div>
+                    <div class="task-details">
+                        <div class="task-detail">
+                            <strong>Task ID:</strong> ${task.id}
+                        </div>
+                        <div class="task-detail">
+                            <strong>Process:</strong> ${task.processInstanceId}
+                        </div>
+                        <div class="task-detail">
+                            <strong>Phase:</strong> ${task.phase || 'N/A'}
+                        </div>
+                    </div>
+                    <button class="btn-complete" onclick="openTask('${task.processInstanceId}', '${task.id}')">
+                        📝 Complete Assessment
+                    </button>
+                    <button class="btn-complete" onclick="viewProcessDiagram('${task.processInstanceId}')" style="background: #17a2b8; margin-left: 10px;">
+                        📊 View Diagram
+                    </button>
+                `;
+
+                container.appendChild(taskCard);
+            });
+        }
+
+        function openTask(processInstanceId, taskId) {
+            window.location.href = `/task-form.html?processInstanceId=${processInstanceId}&taskId=${taskId}`;
+        }
+
+        function viewProcessDiagram(processInstanceId) {
+            window.location.href = `/process-diagram.html?processInstanceId=${processInstanceId}`;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

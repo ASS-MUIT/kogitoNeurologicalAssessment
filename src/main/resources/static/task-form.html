@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DN4 Pain Assessment - Neurological Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-box p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .question label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .question input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .question-text {
+            flex: 1;
+        }
+
+        .task-info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .task-info strong {
+            color: #856404;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DN4 Pain Assessment</h1>
+            <p>Douleur Neuropathique 4 Questions - Neurological Assessment Form</p>
+        </div>
+
+        <div class="content">
+            <div class="task-info">
+                <strong>Process Instance:</strong> <span id="processInstanceId">Loading...</span><br>
+                <strong>Task ID:</strong> <span id="taskId">Loading...</span><br>
+                <strong>User:</strong> <span id="currentUser">Loading...</span>
+            </div>
+
+            <div class="info-box">
+                <h3>Instructions</h3>
+                <p>Please check all symptoms that apply to the patient's pain condition. This questionnaire helps identify neuropathic pain characteristics.</p>
+            </div>
+
+            <form id="dn4Form">
+                <div class="section">
+                    <div class="section-title">Pain Characteristics</div>
+                    
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="burningPain" id="burningPain">
+                            <span class="question-text">Does the pain have a burning sensation?</span>
+                        </label>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="painfulCold" id="painfulCold">
+                            <span class="question-text">Does the pain have a painful cold sensation?</span>
+                        </label>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="electricShock" id="electricShock">
+                            <span class="question-text">Does the pain have electric shock sensations?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Associated Symptoms</div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="tingling" id="tingling">
+                            <span class="question-text">Is there tingling in the painful area?</span>
+                        </label>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="pinsAndNeedles" id="pinsAndNeedles">
+                            <span class="question-text">Are there pins and needles sensations?</span>
+                        </label>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="numbness" id="numbness">
+                            <span class="question-text">Is there numbness in the painful area?</span>
+                        </label>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="itching" id="itching">
+                            <span class="question-text">Is there itching in the painful area?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Physical Examination</div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="touchHypoesthesia" id="touchHypoesthesia">
+                            <span class="question-text">Touch hypoesthesia (decreased sensitivity to touch)?</span>
+                        </label>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="prickHypoesthesia" id="prickHypoesthesia">
+                            <span class="question-text">Prick hypoesthesia (decreased sensitivity to pinprick)?</span>
+                        </label>
+                    </div>
+
+                    <div class="question">
+                        <label>
+                            <input type="checkbox" name="brushingPain" id="brushingPain">
+                            <span class="question-text">Pain caused by brushing the skin?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="btn-cancel" onclick="cancelTask()">Cancel</button>
+                    <button type="submit" class="btn-submit">Submit Assessment</button>
+                </div>
+            </form>
+
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px;">Submitting assessment...</p>
+            </div>
+
+            <div class="error" id="errorMessage"></div>
+            <div class="success" id="successMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get stored credentials from sessionStorage
+        function getCredentials() {
+            return sessionStorage.getItem('authCredentials');
+        }
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const processInstanceId = urlParams.get('processInstanceId');
+        const taskId = urlParams.get('taskId');
+
+        // Update task info on page load
+        document.getElementById('processInstanceId').textContent = processInstanceId || 'Not specified';
+        document.getElementById('taskId').textContent = taskId || 'Not specified';
+
+        // Get current user from sessionStorage
+        const storedUsername = sessionStorage.getItem('username');
+        document.getElementById('currentUser').textContent = storedUsername || 'Not authenticated';
+
+        // Check if user is authenticated
+        if (!getCredentials()) {
+            alert('You are not authenticated. Redirecting to task list...');
+            window.location.href = '/task-list.html';
+        }
+
+        // Handle form submission
+        document.getElementById('dn4Form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!processInstanceId || !taskId) {
+                showError('Process Instance ID and Task ID are required. Please access this form through the task list.');
+                return;
+            }
+
+            const credentials = getCredentials();
+            if (!credentials) {
+                showError('Authentication required. Redirecting to task list...');
+                setTimeout(() => window.location.href = '/task-list.html', 2000);
+                return;
+            }
+
+            // Collect form data
+            const formData = {
+                burningPain: document.getElementById('burningPain').checked,
+                painfulCold: document.getElementById('painfulCold').checked,
+                electricShock: document.getElementById('electricShock').checked,
+                tingling: document.getElementById('tingling').checked,
+                pinsAndNeedles: document.getElementById('pinsAndNeedles').checked,
+                numbness: document.getElementById('numbness').checked,
+                itching: document.getElementById('itching').checked,
+                touchHypoesthesia: document.getElementById('touchHypoesthesia').checked,
+                prickHypoesthesia: document.getElementById('prickHypoesthesia').checked,
+                brushingPain: document.getElementById('brushingPain').checked
+            };
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').classList.add('active');
+            document.getElementById('errorMessage').classList.remove('active');
+            document.getElementById('successMessage').classList.remove('active');
+
+            try {
+                // Use stored credentials
+                const credentials = getCredentials();
+
+                const response = await fetch(`/assessment/${processInstanceId}/tasks/${taskId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + credentials
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                // Hide loading indicator
+                document.getElementById('loadingIndicator').classList.remove('active');
+
+                if (response.ok) {
+                    showSuccess('Assessment submitted successfully! Task completed.');
+                    
+                    // Disable form after successful submission
+                    document.getElementById('dn4Form').querySelectorAll('input, button').forEach(el => {
+                        el.disabled = true;
+                    });
+                    
+                    // Redirect after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = '/task-list.html';
+                    }, 3000);
+                } else {
+                    showError(result.error || 'Error submitting assessment. Please try again.');
+                }
+            } catch (error) {
+                document.getElementById('loadingIndicator').classList.remove('active');
+                showError('Network error: ' + error.message);
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('active');
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('active');
+        }
+
+        function cancelTask() {
+            if (confirm('Are you sure you want to cancel? Your changes will be lost.')) {
+                window.location.href = '/task-list.html';
+            }
+        }
+    </script>
+</body>
+</html>

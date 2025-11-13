@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Diagram - Neurological Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .process-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .process-info h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item strong {
+            color: #333;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-item span {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .diagram-container {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        }
+
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .error h3 {
+            margin-bottom: 10px;
+        }
+
+        .legend {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .legend h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #999;
+        }
+
+        .status-active {
+            background: #28a745;
+        }
+
+        .status-completed {
+            background: #6c757d;
+        }
+
+        .status-pending {
+            background: #ffc107;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Process Instance Diagram</h1>
+            <p>Visual representation of the process execution state</p>
+        </div>
+
+        <div class="content">
+            <div class="process-info">
+                <h3>Process Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Process ID</strong>
+                        <span id="processId">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Instance ID</strong>
+                        <span id="instanceId">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Status</strong>
+                        <span id="processStatus">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>User</strong>
+                        <span id="currentUser">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <div>
+                    <button class="btn" onclick="refreshDiagram()">
+                        🔄 Refresh Diagram
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadSVG()">
+                        💾 Download SVG
+                    </button>
+                </div>
+                <button class="btn btn-secondary" onclick="goBack()">
+                    ← Back to Tasks
+                </button>
+            </div>
+
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                <p>Loading process diagram...</p>
+            </div>
+
+            <div id="diagramContainer" class="diagram-container" style="display: none;"></div>
+
+            <div id="errorMessage" class="error" style="display: none;">
+                <h3>Error Loading Diagram</h3>
+                <p id="errorText"></p>
+            </div>
+
+            <div class="legend">
+                <h4>Legend</h4>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color status-active"></div>
+                        <span>Active/Current Node</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color status-completed"></div>
+                        <span>Completed Node</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color status-pending"></div>
+                        <span>Pending/Future Node</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get stored credentials
+        function getCredentials() {
+            return sessionStorage.getItem('authCredentials');
+        }
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const processInstanceId = urlParams.get('processInstanceId');
+
+        // Process info
+        const processId = 'neurologicalassessment.assessment';
+        
+        // Update process info
+        document.getElementById('processId').textContent = processId;
+        document.getElementById('instanceId').textContent = processInstanceId || 'Not specified';
+        document.getElementById('currentUser').textContent = sessionStorage.getItem('username') || 'Not authenticated';
+
+        // Check authentication
+        if (!getCredentials()) {
+            showError('Authentication required. Redirecting to task list...');
+            setTimeout(() => window.location.href = '/task-list.html', 2000);
+        }
+
+        // Load diagram on page load
+        if (processInstanceId) {
+            loadDiagram();
+        } else {
+            showError('Process Instance ID is required. Please access this page from the task list.');
+        }
+
+        async function loadDiagram() {
+            const credentials = getCredentials();
+            if (!credentials) {
+                showError('Authentication required');
+                return;
+            }
+
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('diagramContainer').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+
+            try {
+                // Kogito provides SVG at: /assessment/{processInstanceId}/image
+                const svgUrl = `/assessment/${processInstanceId}/image`;
+                
+                const response = await fetch(svgUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Basic ' + credentials,
+                        'Accept': 'image/svg+xml'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to load diagram: ${response.status} ${response.statusText}`);
+                }
+
+                const svgContent = await response.text();
+                
+                // Hide loading, show diagram
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('diagramContainer').style.display = 'flex';
+                document.getElementById('diagramContainer').innerHTML = svgContent;
+
+                // Update status
+                document.getElementById('processStatus').textContent = 'Active';
+                document.getElementById('processStatus').style.color = '#28a745';
+
+            } catch (error) {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                showError('Error loading diagram: ' + error.message + 
+                    '. Make sure the process instance exists and you have permission to view it.');
+            }
+        }
+
+        function refreshDiagram() {
+            loadDiagram();
+        }
+
+        function downloadSVG() {
+            const svgElement = document.querySelector('#diagramContainer svg');
+            if (!svgElement) {
+                alert('No diagram to download');
+                return;
+            }
+
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `process-${processInstanceId}.svg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function goBack() {
+            window.location.href = '/task-list.html';
+        }
+
+        function showError(message) {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('diagramContainer').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorText').textContent = message;
+        }
+    </script>
+</body>
+</html>
