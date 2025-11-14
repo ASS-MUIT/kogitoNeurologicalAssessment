@@ -2,14 +2,14 @@
 # 🏥 Neurological Assessment Service
 
 <p align="center">
-  <img src="resources/img/frameworks.png" alt="Technology Stack" width="60%">
+  <img src="resources/docs/img/frameworks.png" alt="Technology Stack" width="60%">
 </p>
 
 A Spring Boot application with Kogito for orchestrating neurological patient assessments through BPMN workflows, integrating with HAPI FHIR R5 and Apache Kafka for event-driven processing.
 
 
 
-![BPMN Process Diagram](resources/img/bpmn.png)
+![BPMN Process Diagram](resources/docs/img/bpmn.png)
 
 ## 📑 Table of Contents
 
@@ -101,32 +101,32 @@ The DN4 (Douleur Neuropathique 4 Questions) is a screening tool for neuropathic 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Spring Boot Application                   │
+│                    Spring Boot Application                  │
 ├─────────────────────────────────────────────────────────────┤
-│  ┌────────────────┐  ┌──────────────┐  ┌────────────────┐  │
-│  │   REST Layer   │  │ Web UI Layer │  │  Controllers   │  │
-│  │  (Kogito API)  │  │  (Static)    │  │   (Custom)     │  │
-│  └────────┬───────┘  └──────┬───────┘  └────────┬───────┘  │
-│           │                  │                    │           │
-│  ┌────────┴──────────────────┴────────────────────┴───────┐ │
-│  │              Kogito Process Engine                      │ │
-│  │  ┌──────────────┐  ┌────────────────────────────────┐ │ │
-│  │  │ BPMN Process │  │  Human Task Management         │ │ │
-│  │  │   Runtime    │  │  (Work Items, Task Lifecycle)  │ │ │
-│  │  └──────────────┘  └────────────────────────────────┘ │ │
-│  └──────────────────────────────────────────────────────────┘ │
-│           │                                          │         │
-│  ┌────────┴─────────┐                      ┌────────┴──────┐ │
-│  │  Business Logic  │                      │  Event Layer  │ │
-│  │  (Services)      │                      │  (Kafka)      │ │
-│  └────────┬─────────┘                      └────────┬──────┘ │
-└───────────┼──────────────────────────────────────────┼────────┘
-            │                                          │
-    ┌───────┴─────────┐                       ┌────────┴────────┐
-    │  HAPI FHIR R5   │                       │  Apache Kafka   │
-    │     Server      │                       │   (localhost:   │
-    │ (localhost:8888)│                       │     9092)       │
-    └─────────────────┘                       └─────────────────┘
+│  ┌────────────────┐  ┌──────────────┐   ┌────────────────┐  │
+│  │   REST Layer   │  │ Web UI Layer │   │  Controllers   │  │
+│  │  (Kogito API)  │  │  (Static)    │   │   (Custom)     │  │
+│  └────────┬───────┘  └──────┬───────┘   └────────┬───────┘  │
+│           │                 │                    │          │
+│  ┌────────┴─────────────────┴────────────────────┴───────┐  │
+│  │              Kogito Process Engine                    │  │
+│  │  ┌──────────────┐  ┌────────────────────────────────┐ │  │
+│  │  │ BPMN Process │  │  Human Task Management         │ │  │
+│  │  │   Runtime    │  │  (Work Items, Task Lifecycle)  │ │  │
+│  │  └──────────────┘  └────────────────────────────────┘ │  │
+│  └───────────────────────────────────────────────────────┘  │
+│           │                                         │       │
+│  ┌────────┴─────────┐                      ┌────────┴──────┐│
+│  │  Business Logic  │                      │  Event Layer  ││
+│  │  (Services)      │                      │  (Kafka)      ││
+│  └────────┬─────────┘                      └────────┬──────┘│
+└───────────┼─────────────────────────────────────────┼───────┘
+            │                                         │
+    ┌───────┴─────────┐                       ┌───────┴────────┐
+    │  HAPI FHIR R5   │                       │  Apache Kafka  │
+    │     Server      │                       │   (localhost:  │
+    │ (localhost:8888)│                       │     9092)      │
+    └─────────────────┘                       └────────────────┘
 ```
 
 ### Layered Architecture
@@ -188,10 +188,14 @@ kogitoNeurologicalAssessment/
 │   └── 🧪 test/
 │       └── 📂 resources/                                # Test scripts (PowerShell)
 ├── 📂 resources/
-│   └── 🖼️ img/
-│       ├── 📊 bpmn.png                                  # Process diagram image
-│       └── 🛠️ frameworks.png                            # Technology stack image
-├── 📚 docs/                                             # Additional documentation
+│   ├── 📚 docs/                                         # Additional documentation
+│   │   ├── 🖼️ img/                                      # Documentation images
+│   │   │   ├── 🛠️ frameworks.png                        # Technology stack image
+│   │   │   └── 🧠 bpmn.png                              # Process diagram image
+│   │   ├── 📖 PROCESS_ANNOTATIONS.md                    # Detailed BPMN element documentation
+│   │   ├── 📘 TASK_API_USAGE.md                         # Task API usage guide
+│   │   ├── 🩺 TROUBLESHOOTING_TASKS.md                  # Troubleshooting guide
+│   │   └── 📄 SOLUCION_FINAL.md                        # Final solution notes
 ├── 🔨 pom.xml                                           # Maven project configuration
 └── 📖 README.md                                         # This file
 ```
@@ -200,7 +204,7 @@ kogitoNeurologicalAssessment/
 
 The neurological assessment workflow is defined in `src/main/resources/assessment.bpmn`. For a **detailed explanation of each process element** (start events, tasks, gateways, end events), including their purpose, inputs, outputs, and code, please refer to:
 
-📖 **[PROCESS_ANNOTATIONS.md](docs/PROCESS_ANNOTATIONS.md)**
+📖 **[PROCESS_ANNOTATIONS.md](resources/docs/PROCESS_ANNOTATIONS.md)**
 
 This document provides:
 - Detailed annotations for each BPMN element
@@ -255,8 +259,8 @@ This document provides:
    ```bash
     docker run -p 8090:8080 -v $(pwd)/hapi-data:/configs -e "--spring.config.location=file:///configs/application.yaml" hapiproject/hapi:latest
     ```
-   - A FHIR R5 server should be running at `http://localhost:8888/fhir`
-   - Create the needed resources (you can use the "bundle.json" available in resources/FHIRResources within a transaction):
+   - After this a FHIR R5 server should be running at `http://localhost:8888/fhir`
+   - Create the needed resources (you can use the `bundle.json` available in `resources/FHIRResources` within a transaction):
      - 📅 Appointment resources
      - 🧑‍⚕️ Patient resources
      - 👨‍⚕️ Practitioner resources
@@ -445,14 +449,14 @@ public UserDetailsService userDetailsService() {
 
 ## Additional Documentation
 
-- **[TASK_API_USAGE.md](docs/TASK_API_USAGE.md)**: Detailed guide on task API usage and lifecycle
-- **[TROUBLESHOOTING_TASKS.md](docs/TROUBLESHOOTING_TASKS.md)**: Common issues and solutions for task management
+- **[TASK_API_USAGE.md](resources/docs/TASK_API_USAGE.md)**: Detailed guide on task API usage and lifecycle
+- **[TROUBLESHOOTING_TASKS.md](resources/docs/TROUBLESHOOTING_TASKS.md)**: Common issues and solutions for task management
 
 ## Contributing
 
 This project is intended for educational purposes. For questions or issues:
 
-1. Check existing documentation in the `docs/` folder
+1. Check existing documentation in the `resources/docs/` folder
 2. Review the BPMN process definition in `src/main/resources/assessment.bpmn`
 3. Examine generated sources in `target/generated-sources/kogito/` after compilation
 
