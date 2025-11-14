@@ -1,62 +1,62 @@
-# Guía de Uso de la API de Tareas de Kogito
+# Kogito Task API Usage Guide
 
-## 📋 Resumen del Problema y Solución
+## 📋 Problem Summary and Solution
 
-### Problema Identificado
-Los usuarios con rol `practitioner` (como `doctorWho`) no podían ver sus tareas asignadas debido a:
+### Identified Problem
+Users with the `practitioner` role (such as `doctorWho`) could not see their assigned tasks due to:
 
-1. **Discrepancia entre rol y grupo**: Spring Security agregaba el prefijo `ROLE_` a los roles, pero Kogito buscaba grupos sin prefijo
-2. **Falta del addon de Task Management**: No estaba incluida la dependencia necesaria para gestionar tareas
+1. **Mismatch between role and group**: Spring Security added the `ROLE_` prefix to roles, but Kogito looked for groups without the prefix
+2. **Missing Task Management addon**: The required dependency for managing tasks was not included
 
-### Solución Aplicada
-1. ✅ Cambiado `.roles()` por `.authorities()` en la configuración de seguridad
-2. ✅ Agregado el addon `kogito-addons-springboot-task-management` al `pom.xml`
-3. ✅ Configurado `kogito.service.url` en `application.properties`
+### Applied Solution
+1. ✅ Changed `.roles()` to `.authorities()` in the security configuration
+2. ✅ Added the `kogito-addons-springboot-task-management` addon to `pom.xml`
+3. ✅ Configured `kogito.service.url` in `application.properties`
 
-## 🔌 Endpoints de la API de Tareas
+## 🔌 Task API Endpoints
 
-### 1. Obtener todas las tareas del usuario autenticado
+### 1. Get all tasks for the authenticated user
 
 ```bash
 GET http://localhost:8080/assessment/tasks
 ```
 
-**Autenticación requerida**: Sí (Basic Auth)
+**Authentication required**: Yes (Basic Auth)
 
-**Ejemplo con curl:**
+**Example with curl:**
 ```bash
 curl -u doctorWho:doctorWho http://localhost:8080/assessment/tasks
 ```
 
-**Ejemplo con PowerShell:**
+**Example with PowerShell:**
 ```powershell
 $credentials = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("doctorWho:doctorWho"))
 Invoke-RestMethod -Uri "http://localhost:8080/assessment/tasks" -Headers @{Authorization="Basic $credentials"}
 ```
 
-### 2. Obtener tareas de una instancia de proceso específica
+### 2. Get tasks for a specific process instance
 
 ```bash
 GET http://localhost:8080/assessment/{processInstanceId}/tasks
 ```
 
-**Ejemplo:**
+**Example:**
 ```bash
 curl -u doctorWho:doctorWho http://localhost:8080/assessment/12345-67890-abcdef/tasks
 ```
 
-### 3. Obtener detalles de una tarea específica
+### 3. Get details of a specific task
 
 ```bash
 GET http://localhost:8080/assessment/{processInstanceId}/painAssessment/{taskId}
 ```
 
-**Ejemplo:**
+**Example:**
 ```bash
 curl -u doctorWho:doctorWho http://localhost:8080/assessment/12345-67890-abcdef/painAssessment/task-001
 ```
 
-### 4. Completar una tarea
+### 4. Complete a task
 
 ```bash
 POST http://localhost:8080/assessment/{processInstanceId}/painAssessment/{taskId}
@@ -78,7 +78,7 @@ Content-Type: application/json
 }
 ```
 
-**Ejemplo con curl:**
+**Example with curl:**
 ```bash
 curl -u doctorWho:doctorWho \
   -X POST \
@@ -87,7 +87,7 @@ curl -u doctorWho:doctorWho \
   http://localhost:8080/assessment/12345-67890-abcdef/painAssessment/task-001
 ```
 
-**Ejemplo con PowerShell:**
+**Example with PowerShell:**
 ```powershell
 $credentials = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("doctorWho:doctorWho"))
 $body = @{
@@ -114,42 +114,42 @@ Invoke-RestMethod -Uri "http://localhost:8080/assessment/12345-67890-abcdef/pain
   -Body $body
 ```
 
-## 👥 Usuarios Configurados
+## 👥 Configured Users
 
-| Usuario   | Password  | Grupo/Autoridad | Puede ver tareas de |
+| User      | Password  | Group/Authority | Can view tasks for |
 |-----------|-----------|-----------------|---------------------|
 | doctorWho | doctorWho | practitioner    | painAssessment      |
 | paul      | paul      | practitioner    | painAssessment      |
-| mary      | mary      | patient         | (ninguna)           |
+| mary      | mary      | patient         | (none)              |
 
-## 🔍 Verificación del Funcionamiento
+## 🔍 Functionality Verification
 
-### Paso 1: Compilar el proyecto
+### Step 1: Compile the project
 ```bash
 mvn clean install
 ```
 
-### Paso 2: Iniciar la aplicación
+### Step 2: Start the application
 ```bash
 mvn spring-boot:run
 ```
 
-O en PowerShell:
+Or in PowerShell:
 ```powershell
 .\run.ps1
 ```
 
-### Paso 3: Crear una instancia de proceso
+### Step 3: Create a process instance
 
-Usa el script existente `send-test-message.ps1` o envía un mensaje a Kafka con un appointmentId.
+Use the existing script `send-test-message.ps1` or send a message to Kafka with an appointmentId.
 
-### Paso 4: Verificar tareas disponibles
+### Step 4: Verify available tasks
 
 ```bash
 curl -u doctorWho:doctorWho http://localhost:8080/assessment/tasks
 ```
 
-Deberías ver una respuesta similar a:
+You should see a response similar to:
 ```json
 [
   {
@@ -176,25 +176,25 @@ Deberías ver una respuesta similar a:
 
 ## 🐛 Troubleshooting
 
-### No veo ninguna tarea
-1. Verifica que el proceso se haya iniciado correctamente
-2. Comprueba los logs: `logging.level.org.kie.kogito=DEBUG` en `application.properties`
-3. Asegúrate de estar autenticado con el usuario correcto (`doctorWho` o `paul`)
+### I don't see any tasks
+1. Verify that the process was started correctly
+2. Check the logs: set `logging.level.org.kie.kogito=DEBUG` in `application.properties`
+3. Make sure you are authenticated with the correct user (`doctorWho` or `paul`)
 
 ### Error 401 Unauthorized
-- Verifica las credenciales de Basic Auth
-- Asegúrate de que el usuario existe en `DefaultWebSecurityConfig`
+- Verify Basic Auth credentials
+- Make sure the user exists in `DefaultWebSecurityConfig`
 
 ### Error 403 Forbidden
-- Verifica que el usuario tiene el grupo correcto (`practitioner`)
-- Comprueba que el `GroupId` en el BPMN coincida con la autoridad del usuario
+- Verify that the user has the correct group (`practitioner`)
+- Check that the `GroupId` in the BPMN matches the user's authority
 
-### Las tareas aparecen pero no puedo completarlas
-- Verifica que el body JSON tenga la estructura correcta
-- Asegúrate de usar `Content-Type: application/json`
-- Comprueba que todos los campos del objeto `dn4` estén presentes
+### Tasks appear but I cannot complete them
+- Verify that the JSON body has the correct structure
+- Make sure to use `Content-Type: application/json`
+- Check that all fields of the `dn4` object are present
 
-## 📚 Referencias
+## 📚 References
 
 - [Kogito Documentation - Human Tasks](https://docs.jboss.org/kogito/release/latest/html_single/#con-human-tasks_kogito-developing-process-services)
 - [Spring Security Documentation](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/in-memory.html)

@@ -193,9 +193,7 @@ kogitoNeurologicalAssessment/
 │   │   │   ├── 🛠️ frameworks.png                        # Technology stack image
 │   │   │   └── 🧠 bpmn.png                              # Process diagram image
 │   │   ├── 📖 PROCESS_ANNOTATIONS.md                    # Detailed BPMN element documentation
-│   │   ├── 📘 TASK_API_USAGE.md                         # Task API usage guide
-│   │   ├── 🩺 TROUBLESHOOTING_TASKS.md                  # Troubleshooting guide
-│   │   └── 📄 SOLUCION_FINAL.md                        # Final solution notes
+│   │   └── 📄 TASK_API_USAGE.md                         # Task API usage guide
 ├── 🔨 pom.xml                                           # Maven project configuration
 └── 📖 README.md                                         # This file
 ```
@@ -450,7 +448,7 @@ public UserDetailsService userDetailsService() {
 ## Additional Documentation
 
 - **[TASK_API_USAGE.md](resources/docs/TASK_API_USAGE.md)**: Detailed guide on task API usage and lifecycle
-- **[TROUBLESHOOTING_TASKS.md](resources/docs/TROUBLESHOOTING_TASKS.md)**: Common issues and solutions for task management
+
 
 ## Contributing
 

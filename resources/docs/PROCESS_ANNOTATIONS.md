@@ -261,7 +261,7 @@ Scale Result is <score>
 
 - **BPMN 2.0 Specification:** https://www.omg.org/spec/BPMN/2.0/
 - **Kogito Documentation:** https://docs.jboss.org/kogito/release/latest/html_single/
-- **DN4 Questionnaire:** https://www.neuropathicpain.eu/en/dn4-questionnaire
+- **DN4 Questionnaire:** https://aci.health.nsw.gov.au/__data/assets/pdf_file/0014/212900/DN4_Assessment_Tool.pdf
 
 ---
 
