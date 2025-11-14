@@ -1,6 +1,9 @@
 
 # 🏥 Neurological Assessment Service
-![Technology Stack](resources/img/frameworks.png)
+
+<p align="center">
+  <img src="resources/img/frameworks.png" alt="Technology Stack" width="60%">
+</p>
 
 A Spring Boot application with Kogito for orchestrating neurological patient assessments through BPMN workflows, integrating with HAPI FHIR R5 and Apache Kafka for event-driven processing.
 
