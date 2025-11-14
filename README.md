@@ -1,91 +1,100 @@
-# Neurological Assessment Service
+
+# 🏥 Neurological Assessment Service
+![Technology Stack](resources/img/frameworks.png)
 
 A Spring Boot application with Kogito for orchestrating neurological patient assessments through BPMN workflows, integrating with HAPI FHIR R5 and Apache Kafka for event-driven processing.
 
+
+
 ![BPMN Process Diagram](resources/img/bpmn.png)
 
-## Table of Contents
+## 📑 Table of Contents
 
-- [Project Overview](#project-overview)
-- [Technology Stack](#technology-stack)
-- [Kogito Add-ons](#kogito-add-ons)
-- [Functionality](#functionality)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Build and Run](#build-and-run)
-- [Available Interfaces](#available-interfaces)
-- [Security Configuration](#security-configuration)
-- [API Endpoints](#api-endpoints)
+- [📋 Project Overview](#project-overview)
+- [🛠️ Technology Stack](#technology-stack)
+- [🔌 Kogito Add-ons](#kogito-add-ons)
+- [⚙️ Functionality](#functionality)
+- [🏗️ Architecture](#architecture)
+- [📁 Project Structure](#project-structure)
+- [📖 BPMN Process Documentation](#bpmn-process-documentation)
+- [✅ Prerequisites](#prerequisites)
+- [🚀 Build and Run](#build-and-run)
+- [🖥️ Available Interfaces](#available-interfaces)
+- [🔐 Security Configuration](#security-configuration)
+- [🌐 API Endpoints](#api-endpoints)
 
-## Project Overview
+## 📋 Project Overview
 
 This project is a **Spring Boot 2.7.18** application that uses **Kogito 1.44.1.Final** to implement business process automation for neurological assessments. The service listens to appointment events from Kafka, retrieves patient and practitioner information from a HAPI FHIR R5 server, and orchestrates the assessment workflow through BPMN processes with human tasks.
 
-### Key Features
+### ✨ Key Features
 
-- **Event-driven architecture** with Apache Kafka integration
-- **BPMN 2.0 workflow** orchestration using Kogito
-- **FHIR R5 integration** with HAPI FHIR client
-- **Human task management** with role-based assignment
-- **Process instance visualization** with SVG diagram generation
-- **RESTful API** for process and task management
-- **Spring Security** with HTTP Basic authentication
+- 📨 **Event-driven architecture** with Apache Kafka integration
+- 🔄 **BPMN 2.0 workflow** orchestration using Kogito
+- 🏥 **FHIR R5 integration** with HAPI FHIR client
+- 👥 **Human task management** with role-based assignment
+- 📊 **Process instance visualization** with SVG diagram generation
+- 🌐 **RESTful API** for process and task management
+- 🔐 **Spring Security** with HTTP Basic authentication
 
-## Technology Stack
+## 🛠️ Technology Stack
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Spring Boot | 2.7.18 | Application framework |
-| Kogito | 1.44.1.Final | Business process automation |
-| Java | 17 | Programming language |
-| Apache Kafka | 3.1.2 | Event streaming platform |
-| HAPI FHIR | 8.4.0 | FHIR R5 client library |
-| Jackson | 2.15.0 | JSON processing |
-| Maven | 3.x | Build tool |
+| ☕ Spring Boot | 2.7.18 | Application framework |
+| 🔄 Kogito | 1.44.1.Final | Business process automation |
+| ☕ Java | 17 | Programming language |
+| 📨 Apache Kafka | 3.1.2 | Event streaming platform |
+| 🏥 HAPI FHIR | 8.4.0 | FHIR R5 client library |
+| 📦 Jackson | 2.15.0 | JSON processing |
+| 🔨 Maven | 3.x | Build tool |
 
-## Kogito Add-ons
+## 🔌 Kogito Add-ons
 
 The application includes the following Kogito add-ons:
 
-### Process Management
+### 🔄 Process Management
+
 - **`kogito-addons-springboot-process-management`**: Provides REST endpoints for managing process instances (start, abort, get status)
 - **`kogito-addons-springboot-process-svg`**: Generates SVG diagrams of process instances showing current state and completed nodes
 
-### Task Management
+### 👥 Task Management
+
 - **`kogito-addons-springboot-task-management`**: Exposes REST API for human task operations (claim, start, complete, release)
 
-### Events & Messaging
+### 📨 Events & Messaging
+
 - **`kogito-addons-springboot-events-process-kafka`**: Integrates Kogito with Apache Kafka for consuming and producing CloudEvents
 - **`kogito-addons-springboot-messaging`**: Enables message-based process triggering and event publishing
 
-### CloudEvents Support
+### ☁️ CloudEvents Support
+
 - **`cloudevents-json-jackson`**: CloudEvents JSON serialization/deserialization
 - **`cloudevents-api`**: CloudEvents specification implementation
 
-## Functionality
+## ⚙️ Functionality
 
-### Process Flow
+### 🔄 Process Flow
 
-1. **Event Reception**: The service listens to the `appointments` Kafka topic for new appointment events
-2. **Process Initiation**: A new process instance is created with the retrieved data
-3. **FHIR Integration**: Upon receiving an appointment URL, the service queries the HAPI FHIR server to retrieve:
-   - Practitioner information (who should conduct the assessment)
-   - Patient information (who will be assessed)
-4. **Human Task Creation**: A task is created and assigned to the `practitioner` group for DN4 (Douleur Neuropathique 4) pain assessment
-5. **Task Completion**: A practitioner claims and completes the task through the REST API or web interface
-6. **Process Completion**: The process finalizes after logging the assessment results
+1. **📩 Event Reception**: The service listens to the `appointments` Kafka topic for new appointment events
+2. **▶️ Process Initiation**: A new process instance is created with the retrieved data
+3. **🏥 FHIR Integration**: Upon receiving an appointment URL, the service queries the HAPI FHIR server to retrieve:
+   - 👨‍⚕️ Practitioner information (who should conduct the assessment)
+   - 🧑‍⚕️ Patient information (who will be assessed)
+4. **📋 Human Task Creation**: A task is created and assigned to the `practitioner` group for DN4 (Douleur Neuropathique 4) pain assessment
+5. **✅ Task Completion**: A practitioner claims and completes the task through the REST API or web interface
+6. **🏁 Process Completion**: The process finalizes after logging the assessment results
 
-### DN4 Pain Assessment
+### 🩺 DN4 Pain Assessment
 
 The DN4 (Douleur Neuropathique 4 Questions) is a screening tool for neuropathic pain. The task requires practitioners to evaluate patients based on:
-- Pain characteristics (burning, painful cold, electric shocks)
-- Associated symptoms (tingling, pins and needles, numbness, itching)
-- Examination findings (touch hypoesthesia, pinprick hypoesthesia, tactile allodynia)
+- 🔥 Pain characteristics (burning, painful cold, electric shocks)
+- 🎯 Associated symptoms (tingling, pins and needles, numbness, itching)
+- 🔍 Examination findings (touch hypoesthesia, pinprick hypoesthesia, tactile allodynia)
 
-## Architecture
+## 🏗️ Architecture
 
-### Component Architecture
+### 📦 Component Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -144,71 +153,85 @@ The DN4 (Douleur Neuropathique 4 Questions) is a screening tool for neuropathic 
    - In-memory user authentication
    - Authority-based authorization
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 kogitoNeurologicalAssessment/
-├── src/
-│   ├── main/
-│   │   ├── java/us/dit/muit/hsa/neurologicalassessment/
-│   │   │   ├── NeurologicalAssessment.java          # Main application class
-│   │   │   ├── config/
-│   │   │   │   └── DefaultWebSecurityConfig.java    # Security configuration
-│   │   │   ├── controller/
-│   │   │   │   ├── NeurologicalSvgController.java   # Custom SVG endpoints
-│   │   │   │   └── NeurologicalTasksController.java # Custom task endpoints
-│   │   │   ├── entities/
-│   │   │   │   ├── AppointmentDTO.java              # Appointment data transfer object
-│   │   │   │   └── DN4.java                         # DN4 assessment entity
-│   │   │   └── services/
-│   │   │       └── AppointmentDAOService.java       # FHIR integration service
-│   │   └── resources/
-│   │       ├── application.properties                # Application configuration
-│   │       ├── assessment.bpmn                       # BPMN process definition
-│   │       ├── identities.batch                      # User definitions for security
-│   │       ├── META-INF/
-│   │       │   └── kmodule.xml                       # Kogito module configuration
-│   │       └── static/                               # Web UI resources
-│   │           ├── index.html                        # Landing page
-│   │           ├── task-list.html                    # Task list interface
-│   │           ├── task-form.html                    # Task completion form
-│   │           ├── process-diagram.html              # Process definition viewer
-│   │           └── process-instances-viewer.html     # Instance state viewer
-│   └── test/
-│       └── resources/                                # Test scripts (PowerShell)
-├── resources/
-│   └── img/
-│       └── bpmn.png                                  # Process diagram image
-├── docs/                                             # Additional documentation
-├── pom.xml                                           # Maven project configuration
-└── README.md                                         # This file
+├── 📂 src/
+│   ├── 📂 main/
+│   │   ├── ☕ java/us/dit/muit/hsa/neurologicalassessment/
+│   │   │   ├── 🚀 NeurologicalAssessment.java          # Main application class
+│   │   │   ├── ⚙️ config/
+│   │   │   │   └── 🔐 DefaultWebSecurityConfig.java    # Security configuration
+│   │   │   ├── 🎮 controller/
+│   │   │   │   ├── 📊 NeurologicalSvgController.java   # Custom SVG endpoints
+│   │   │   │   └── 📋 NeurologicalTasksController.java # Custom task endpoints
+│   │   │   ├── 📦 entities/
+│   │   │   │   ├── 📄 AppointmentDTO.java              # Appointment data transfer object
+│   │   │   │   └── 🩺 DN4.java                         # DN4 assessment entity
+│   │   │   └── 🔧 services/
+│   │   │       └── 🏥 AppointmentDAOService.java       # FHIR integration service
+│   │   └── 📂 resources/
+│   │       ├── ⚙️ application.properties                # Application configuration
+│   │       ├── 🔄 assessment.bpmn                       # BPMN process definition
+│   │       ├── 📂 META-INF/
+│   │       │   └── 🔧 kmodule.xml                       # Kogito module configuration
+│   │       └── 🌐 static/                               # Web UI resources
+│   │           ├── 🏠 index.html                        # Landing page
+│   │           ├── 📋 task-list.html                    # Task list interface
+│   │           ├── ✅ task-form.html                    # Task completion form
+│   │           ├── 📊 process-diagram.html              # Process definition viewer
+│   │           └── 👁️ process-instances-viewer.html     # Instance state viewer
+│   └── 🧪 test/
+│       └── 📂 resources/                                # Test scripts (PowerShell)
+├── 📂 resources/
+│   └── 🖼️ img/
+│       ├── 📊 bpmn.png                                  # Process diagram image
+│       └── 🛠️ frameworks.png                            # Technology stack image
+├── 📚 docs/                                             # Additional documentation
+├── 🔨 pom.xml                                           # Maven project configuration
+└── 📖 README.md                                         # This file
 ```
 
-### Generated Sources
+## 📖 BPMN Process Documentation
 
-During compilation, Kogito generates additional source files in `target/generated-sources/kogito/`:
+The neurological assessment workflow is defined in `src/main/resources/assessment.bpmn`. For a **detailed explanation of each process element** (start events, tasks, gateways, end events), including their purpose, inputs, outputs, and code, please refer to:
 
-- **Process classes**: `AssessmentProcess`, `AssessmentProcessInstance`
-- **Task model classes**: `Assessment_7_TaskModel`, `Assessment_7_TaskInput`, `Assessment_7_TaskOutput`
-- **REST resources**: `AssessmentResource` (exposes process REST API)
-- **Message consumers**: `AssessmentMessageConsumer_2` (Kafka integration)
-- **Application configuration**: `Application`, `ApplicationConfig`, `ProcessConfig`
+📖 **[PROCESS_ANNOTATIONS.md](docs/PROCESS_ANNOTATIONS.md)**
 
-## Prerequisites
+This document provides:
+- Detailed annotations for each BPMN element
+- Explanation of the DN4 pain assessment scale
+- Process flow logic and decision points
+- Process variables and their usage
+- Testing instructions and integration points
 
-### Required Software
+### Quick Process Overview
 
-1. **Java Development Kit (JDK) 17**
+1. **▶️ Start Event** - Receives appointment message from Kafka
+2. **🔧 Service Task** - Retrieves appointment data from FHIR server
+3. **📝 Script Task** - Logs and sets process variables
+4. **👨‍⚕️ User Task** - Practitioner performs DN4 pain assessment
+5. **🧮 Script Task** - Calculates DN4 score
+6. **🔀 Gateway** - Decides based on score (threshold: 4 points)
+7. **📊 Script Task** - Logs diagnosis result (neuropathic or not)
+8. **🏁 End Event** - Process terminates
+
+## ✅ Prerequisites
+
+### 📋 Required Software
+
+1. **☕ Java Development Kit (JDK) 17**
    ```bash
    java -version  # Should show version 17.x
    ```
 
-2. **Apache Maven 3.x**
+2. **🔨 Apache Maven 3.x**
    ```bash
    mvn -version
    ```
 
-3. **Apache Kafka**
+3. **📨 Apache Kafka**
    - Start a docker container using
    ```bash
    docker run -p 9092:9092 --name kafka apache/kafka:4.1.0
@@ -223,24 +246,25 @@ During compilation, Kogito generates additional source files in `target/generate
      ./kafka-console-producer.sh --bootstrap-server localhost:9092 --topic appointments
      ```
 
-4. **HAPI FHIR R5 Server**
+4. **🏥 HAPI FHIR R5 Server**
+   - You can use the online hapi fhir server, or follow these instructions to start your own server
    - Start a FHIR R5 server using the official image. Move to the "resources" folder and execute
    ```bash
     docker run -p 8090:8080 -v $(pwd)/hapi-data:/configs -e "--spring.config.location=file:///configs/application.yaml" hapiproject/hapi:latest
     ```
    - A FHIR R5 server should be running at `http://localhost:8888/fhir`
    - Create the needed resources (you can use the "bundle.json" available in resources/FHIRResources within a transaction):
-     - Appointment resources
-     - Patient resources
-     - Practitioner resources
+     - 📅 Appointment resources
+     - 🧑‍⚕️ Patient resources
+     - 👨‍⚕️ Practitioner resources
 
-### Configuration
+### ⚙️ Configuration
 
 Default configuration in `application.properties`
 
-## Build and Run
+## 🚀 Build and Run
 
-### Compile the Project
+### 🔨 Compile the Project
 
 ```bash
 # Clean and compile
@@ -249,7 +273,7 @@ mvn clean compile
 # The Kogito Maven plugin will generate process code during compilation
 ```
 
-### Run the Application
+### ▶️ Run the Application
 
 ```bash
 # Option 1: Using Maven
@@ -259,24 +283,26 @@ mvn spring-boot:run
 mvn clean package
 java -jar target/neurological-assessment-1.0.0-SNAPSHOT.jar
 ```
-## Available Interfaces
 
-### Web Interfaces
+## 🖥️ Available Interfaces
+
+### 🌐 Web Interfaces
 
 All web interfaces require authentication (use `doctorWho:doctorWho`).
 
 | URL | Description | Purpose |
 |-----|-------------|---------|
-|`http://localhost:8080/` | **Landing Page** | Main entry point with links to all interfaces |
-| `http://localhost:8080/task-list.html` | **Task List** | View and manage available human tasks |
-| `http://localhost:8080/task-form.html` | **Task Form** | Complete DN4 assessment tasks |
-| `http://localhost:8080/swagger-ui/index.html` | **Swagger Interfaz** | Detail of REST API through swagger (open-api) |
+| 🏠 `http://localhost:8080/` | **Landing Page** | Main entry point with links to all interfaces |
+| 📋 `http://localhost:8080/task-list.html` | **Task List** | View and manage available human tasks |
+| ✅ `http://localhost:8080/task-form.html` | **Task Form** | Complete DN4 assessment tasks |
+| 📚 `http://localhost:8080/swagger-ui/index.html` | **Swagger Interface** | Detail of REST API through swagger (open-api) |
 
-### REST API Endpoints
+### 🌐 REST API Endpoints
 
-#### Auto-generated Kogito Endpoints
+#### 🤖 Auto-generated Kogito Endpoints
 
-##### Process Management
+##### 🔄 Process Management
+
 ```bash
 # List all process instances
 GET /assessment
@@ -291,7 +317,8 @@ POST /assessment
 DELETE /assessment/{instanceId}
 ```
 
-##### Task Management (Auto-generated)
+##### 📋 Task Management (Auto-generated)
+
 ```bash
 # List all tasks for a process instance
 GET /assessment/{instanceId}/tasks
@@ -346,21 +373,6 @@ Content-Type: application/json
   "dn4": { ... }
 }
 ```
-
-##### SVG Visualization
-```bash
-# Get SVG diagram of a process instance (showing current state)
-GET /svg/{processId}/{instanceId}
-Example: GET /svg/neurologicalassessment.assessment/abc-123-def-456
-
-# Get SVG diagram of process definition (no state)
-GET /svg/processes/{processId}
-Example: GET /svg/processes/neurologicalassessment.assessment
-
-# Check SVG service status
-GET /svg/status
-```
-
 ### Example: Complete Workflow via API
 
 ```bash
@@ -391,19 +403,19 @@ curl -X POST -u doctorWho:doctorWho \
   "http://localhost:8080/assessment/{instanceId}/painAssessment/{taskId}?phase=complete&user=doctorWho"
 ```
 
-## Security Configuration
+## 🔐 Security Configuration
 
-### User Credentials
+### 👥 User Credentials
 
 The application uses in-memory authentication with the following predefined users:
 
 | Username | Password | Authority | Description |
 |----------|----------|-----------|-------------|
-| `doctorWho` | `doctorWho` | `practitioner` | Medical practitioner - can complete assessments |
-| `paul` | `paul` | `practitioner` | Medical practitioner - can complete assessments |
-| `mary` | `mary` | `patient` | Patient role - read-only access |
+| 👨‍⚕️ `doctorWho` | `doctorWho` | `practitioner` | Medical practitioner - can complete assessments |
+| 👨‍⚕️ `paul` | `paul` | `practitioner` | Medical practitioner - can complete assessments |
+| 🧑‍⚕️ `mary` | `mary` | `patient` | Patient role - read-only access |
 
-### Important Notes
+### ⚠️ Important Notes
 
 - Users are configured with `.authorities()` instead of `.roles()` to match BPMN `GroupId` without the `ROLE_` prefix
 - All REST endpoints require HTTP Basic authentication
@@ -412,7 +424,7 @@ The application uses in-memory authentication with the following predefined user
 
 ### Customizing Security
 
-To add more users, edit `src/main/resources/identities.batch` or modify `DefaultWebSecurityConfig.java`:
+To add more users modify `DefaultWebSecurityConfig.java`:
 
 ```java
 @Bean
