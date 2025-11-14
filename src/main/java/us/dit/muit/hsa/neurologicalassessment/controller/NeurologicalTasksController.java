@@ -28,35 +28,55 @@ import us.dit.muit.hsa.neurologicalassessment.entities.DN4;
 /**
  * Custom REST controller for user task management in Kogito processes.
  * 
- * <p>This controller provides task query endpoints that automatically filter tasks based on
- * the authenticated user's identity and roles using Spring Security's IdentityProvider.
+ * <p>
+ * This controller provides task query endpoints that automatically filter tasks
+ * based on
+ * the authenticated user's identity and roles using Spring Security's
+ * IdentityProvider.
  * 
- * <p><b>Purpose:</b> Kogito's auto-generated task endpoints require explicit  'group' and/or 'user'
- * query parameters to filter tasks. This controller overrides that behavior to provide a more 
- * convenient REST API that automatically retrieves tasks assigned to the authenticated user 
+ * <p>
+ * <b>Purpose:</b> Kogito's auto-generated task endpoints require explicit
+ * 'group' and/or 'user'
+ * query parameters to filter tasks. This controller overrides that behavior to
+ * provide a more
+ * convenient REST API that automatically retrieves tasks assigned to the
+ * authenticated user
  * without requiring manual parameter passing.
  * 
- * <p><b>How it works:</b>
+ * <p>
+ * <b>How it works:</b>
  * <ul>
- *   <li>Uses {@link IdentityProvider} to automatically extract the authenticated user's name 
- *       and roles from the Spring Security context</li>
- *   <li>Filters tasks by matching the task's ActorId (assigned user) or GroupId (assigned group) 
- *       against the authenticated user's identity and roles</li>
- *   <li>Returns only active tasks (phaseStatus="active") that the user has permission to see</li>
- *   <li>Provides detailed logging for debugging task assignment and filtering logic</li>
+ * <li>Uses {@link IdentityProvider} to automatically extract the authenticated
+ * user's name
+ * and roles from the Spring Security context</li>
+ * <li>Filters tasks by matching the task's ActorId (assigned user) or GroupId
+ * (assigned group)
+ * against the authenticated user's identity and roles</li>
+ * <li>Returns only active tasks (phaseStatus="active") that the user has
+ * permission to see</li>
+ * <li>Provides detailed logging for debugging task assignment and filtering
+ * logic</li>
  * </ul>
  * 
- * <p><b>Endpoints:</b>
+ * <p>
+ * <b>Endpoints:</b>
  * <ul>
- *   <li>GET /assessment/tasks - Returns all tasks across all process instances for the current user</li>
- *   <li>GET /assessment/{processInstanceId}/tasks - Returns tasks for a specific process instance 
- *       filtered by the current user</li>
+ * <li>GET /assessment/tasks - Returns all tasks across all process instances
+ * for the current user</li>
+ * <li>GET /assessment/{processInstanceId}/tasks - Returns tasks for a specific
+ * process instance
+ * filtered by the current user</li>
  * </ul>
  * 
- * <p><b>Authentication:</b> All endpoints require HTTP Basic Authentication. The controller uses
- * Spring Security's authentication context to determine user identity and roles.
+ * <p>
+ * <b>Authentication:</b> All endpoints require HTTP Basic Authentication. The
+ * controller uses
+ * Spring Security's authentication context to determine user identity and
+ * roles.
  * 
- * <p><b>Note:</b> This controller uses @Order(0) to ensure it takes precedence over Kogito's
+ * <p>
+ * <b>Note:</b> This controller uses @Order(0) to ensure it takes precedence
+ * over Kogito's
  * auto-generated task endpoints for the same URL patterns.
  * 
  * @see IdentityProvider
@@ -66,9 +86,9 @@ import us.dit.muit.hsa.neurologicalassessment.entities.DN4;
 @RestController
 @RequestMapping("/assessment")
 @Order(0)
-public class TasksController {
+public class NeurologicalTasksController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TasksController.class);
+    private static final Logger logger = LoggerFactory.getLogger(NeurologicalTasksController.class);
 
     @Autowired
     private IdentityProvider identityProvider;
@@ -81,10 +101,10 @@ public class TasksController {
     public ResponseEntity<?> getAllTasksForUser() {
         String userName = identityProvider.getName();
         List<String> userRoles = new ArrayList<>(identityProvider.getRoles());
-        
+
         logger.info("=== Getting all tasks for user: {} ===", userName);
         logger.info("User roles: {}", userRoles);
-        
+
         if (assessmentProcess == null) {
             logger.error("Assessment process not found! Check if the process is properly initialized.");
             Map<String, Object> error = new HashMap<>();
@@ -97,35 +117,35 @@ public class TasksController {
 
         try {
             List<Map<String, Object>> allTasks = new ArrayList<>();
-            
+
             assessmentProcess.instances().stream()
-                .filter(pi -> pi.status() == ProcessInstance.STATE_ACTIVE)
-                .forEach(pi -> {
-                    logger.debug("Checking process instance: {}", pi.id());
-                    pi.workItems().stream()
-                        .peek(wi -> logger.debug("Work item found: id={}, name={}, phase={}, phaseStatus={}", 
-                            wi.getId(), wi.getName(), wi.getPhase(), wi.getPhaseStatus()))
-                        .filter(wi -> "active".equalsIgnoreCase(wi.getPhaseStatus()) || 
-                                     wi.getPhase() == null ||
-                                     wi.getPhase().equals("active"))
-                        .filter(wi -> isTaskAssignedToUser(wi, userName, userRoles))
-                        .forEach(wi -> {
-                            Map<String, Object> taskMap = workItemToMap(wi, pi.id());
-                            allTasks.add(taskMap);
-                            logger.info("Added task: {}", taskMap);
-                        });
-                });
+                    .filter(pi -> pi.status() == ProcessInstance.STATE_ACTIVE)
+                    .forEach(pi -> {
+                        logger.debug("Checking process instance: {}", pi.id());
+                        pi.workItems().stream()
+                                .peek(wi -> logger.debug("Work item found: id={}, name={}, phase={}, phaseStatus={}",
+                                        wi.getId(), wi.getName(), wi.getPhase(), wi.getPhaseStatus()))
+                                .filter(wi -> "active".equalsIgnoreCase(wi.getPhaseStatus()) ||
+                                        wi.getPhase() == null ||
+                                        wi.getPhase().equals("active"))
+                                .filter(wi -> isTaskAssignedToUser(wi, userName, userRoles))
+                                .forEach(wi -> {
+                                    Map<String, Object> taskMap = workItemToMap(wi, pi.id());
+                                    allTasks.add(taskMap);
+                                    logger.info("Added task: {}", taskMap);
+                                });
+                    });
 
             logger.info("Total tasks found for user {}: {}", userName, allTasks.size());
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("tasks", allTasks);
             response.put("userName", userName);
             response.put("userRoles", userRoles);
             response.put("totalTasks", allTasks.size());
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             logger.error("Error getting tasks", e);
             Map<String, Object> error = new HashMap<>();
@@ -141,10 +161,10 @@ public class TasksController {
     public ResponseEntity<?> getTasksForProcess(@PathVariable String processInstanceId) {
         String userName = identityProvider.getName();
         List<String> userRoles = new ArrayList<>(identityProvider.getRoles());
-        
+
         logger.info("=== Getting tasks for process: {} and user: {} ===", processInstanceId, userName);
         logger.info("User roles: {}", userRoles);
-        
+
         if (assessmentProcess == null) {
             Map<String, Object> error = new HashMap<>();
             error.put("error", "Assessment process not initialized");
@@ -154,9 +174,9 @@ public class TasksController {
 
         try {
             ProcessInstance<?> instance = assessmentProcess.instances()
-                .findById(processInstanceId)
-                .orElse(null);
-                
+                    .findById(processInstanceId)
+                    .orElse(null);
+
             if (instance == null) {
                 logger.warn("Process instance {} not found", processInstanceId);
                 Map<String, Object> error = new HashMap<>();
@@ -167,30 +187,30 @@ public class TasksController {
             }
 
             logger.info("Process instance status: {}", instance.status());
-            
+
             List<Map<String, Object>> tasks = instance.workItems().stream()
-                .peek(wi -> logger.debug("Work item: id={}, name={}, phase={}, phaseStatus={}, params={}", 
-                    wi.getId(), wi.getName(), wi.getPhase(), wi.getPhaseStatus(), wi.getParameters()))
-                .filter(wi -> "active".equalsIgnoreCase(wi.getPhaseStatus()) || 
-                             wi.getPhase() == null ||
-                             wi.getPhase().equals("active"))
-                .peek(wi -> logger.debug("Filtering task {} for user {} with roles {}", 
-                    wi.getName(), userName, userRoles))
-                .filter(wi -> isTaskAssignedToUser(wi, userName, userRoles))
-                .map(wi -> workItemToMap(wi, processInstanceId))
-                .collect(Collectors.toList());
+                    .peek(wi -> logger.debug("Work item: id={}, name={}, phase={}, phaseStatus={}, params={}",
+                            wi.getId(), wi.getName(), wi.getPhase(), wi.getPhaseStatus(), wi.getParameters()))
+                    .filter(wi -> "active".equalsIgnoreCase(wi.getPhaseStatus()) ||
+                            wi.getPhase() == null ||
+                            wi.getPhase().equals("active"))
+                    .peek(wi -> logger.debug("Filtering task {} for user {} with roles {}",
+                            wi.getName(), userName, userRoles))
+                    .filter(wi -> isTaskAssignedToUser(wi, userName, userRoles))
+                    .map(wi -> workItemToMap(wi, processInstanceId))
+                    .collect(Collectors.toList());
 
             logger.info("Found {} tasks for process {} and user {}", tasks.size(), processInstanceId, userName);
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("tasks", tasks);
             response.put("processInstanceId", processInstanceId);
             response.put("userName", userName);
             response.put("userRoles", userRoles);
             response.put("totalTasks", tasks.size());
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             logger.error("Error getting tasks for process " + processInstanceId, e);
             Map<String, Object> error = new HashMap<>();
@@ -204,35 +224,35 @@ public class TasksController {
         logger.debug("=== Checking assignment for task: {} ===", workItem.getName());
         logger.debug("User: {}, Roles: {}", userName, userRoles);
         logger.debug("Task parameters: {}", workItem.getParameters());
-        
-        // Verificar si está asignado al usuario específico
+
+        // Verificar si estÃ¡ asignado al usuario especÃ­fico
         if (workItem.getParameters().containsKey("ActorId")) {
             String actorId = (String) workItem.getParameters().get("ActorId");
             logger.debug("Task ActorId: {}", actorId);
             if (userName.equals(actorId)) {
-                logger.info("✓ Task {} assigned to user {} by ActorId", workItem.getName(), userName);
+                logger.info("âœ“ Task {} assigned to user {} by ActorId", workItem.getName(), userName);
                 return true;
             }
         }
-        
-        // Verificar si está asignado a un grupo del usuario
+
+        // Verificar si estÃ¡ asignado a un grupo del usuario
         if (workItem.getParameters().containsKey("GroupId")) {
             Object groupIdObj = workItem.getParameters().get("GroupId");
-            logger.debug("Task GroupId (raw): {} (type: {})", groupIdObj, 
-                groupIdObj != null ? groupIdObj.getClass().getName() : "null");
-            
+            logger.debug("Task GroupId (raw): {} (type: {})", groupIdObj,
+                    groupIdObj != null ? groupIdObj.getClass().getName() : "null");
+
             String groupId = groupIdObj != null ? groupIdObj.toString() : null;
-            
+
             if (groupId != null && userRoles.contains(groupId)) {
-                logger.info("✓ Task {} assigned to user {} by GroupId: {}", 
-                    workItem.getName(), userName, groupId);
+                logger.info("âœ“ Task {} assigned to user {} by GroupId: {}",
+                        workItem.getName(), userName, groupId);
                 return true;
             } else {
-                logger.debug("✗ GroupId '{}' not in user roles: {}", groupId, userRoles);
+                logger.debug("âœ— GroupId '{}' not in user roles: {}", groupId, userRoles);
             }
         }
-        
-        logger.debug("✗ Task {} NOT assigned to user {}", workItem.getName(), userName);
+
+        logger.debug("âœ— Task {} NOT assigned to user {}", workItem.getName(), userName);
         return false;
     }
 
@@ -250,26 +270,31 @@ public class TasksController {
     /**
      * Completes a pain assessment task by submitting the DN4 questionnaire data.
      * 
-     * <p>This endpoint allows authenticated users to complete their assigned pain assessment task
-     * by providing the DN4 (Douleur Neuropathique 4 Questions) questionnaire responses.
+     * <p>
+     * This endpoint allows authenticated users to complete their assigned pain
+     * assessment task
+     * by providing the DN4 (Douleur Neuropathique 4 Questions) questionnaire
+     * responses.
      * 
      * @param processInstanceId The ID of the process instance containing the task
-     * @param taskId The ID of the task to complete
-     * @param dn4 The DN4 questionnaire data with all pain assessment responses
-     * @return ResponseEntity containing success message and task completion details, or error if task not found/not authorized
+     * @param taskId            The ID of the task to complete
+     * @param dn4               The DN4 questionnaire data with all pain assessment
+     *                          responses
+     * @return ResponseEntity containing success message and task completion
+     *         details, or error if task not found/not authorized
      */
     @PostMapping("/{processInstanceId}/tasks/{taskId}")
     public ResponseEntity<?> completeTask(
             @PathVariable String processInstanceId,
             @PathVariable String taskId,
             @RequestBody DN4 dn4) {
-        
+
         String userName = identityProvider.getName();
         List<String> userRoles = new ArrayList<>(identityProvider.getRoles());
-        
+
         logger.info("=== Completing task {} for process {} by user {} ===", taskId, processInstanceId, userName);
         logger.debug("DN4 data received: {}", dn4);
-        
+
         if (assessmentProcess == null) {
             logger.error("Assessment process not found");
             Map<String, Object> error = new HashMap<>();
@@ -279,9 +304,9 @@ public class TasksController {
 
         try {
             ProcessInstance<?> instance = assessmentProcess.instances()
-                .findById(processInstanceId)
-                .orElse(null);
-                
+                    .findById(processInstanceId)
+                    .orElse(null);
+
             if (instance == null) {
                 logger.warn("Process instance {} not found", processInstanceId);
                 Map<String, Object> error = new HashMap<>();
@@ -292,9 +317,9 @@ public class TasksController {
 
             // Find the task
             WorkItem task = instance.workItems().stream()
-                .filter(wi -> wi.getId().equals(taskId))
-                .findFirst()
-                .orElse(null);
+                    .filter(wi -> wi.getId().equals(taskId))
+                    .findFirst()
+                    .orElse(null);
 
             if (task == null) {
                 logger.warn("Task {} not found in process instance {}", taskId, processInstanceId);
@@ -318,21 +343,21 @@ public class TasksController {
             // Complete the task with DN4 data
             Map<String, Object> outputData = new HashMap<>();
             outputData.put("dn4", dn4);
-            
+
             logger.info("Completing task {} with DN4 data", taskId);
             instance.completeWorkItem(taskId, outputData);
-            
-            logger.info("✓ Task {} completed successfully by user {}", taskId, userName);
-            
+
+            logger.info("âœ“ Task {} completed successfully by user {}", taskId, userName);
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Task completed successfully");
             response.put("taskId", taskId);
             response.put("processInstanceId", processInstanceId);
             response.put("completedBy", userName);
             response.put("dn4", dn4);
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             logger.error("Error completing task {} in process {}", taskId, processInstanceId, e);
             Map<String, Object> error = new HashMap<>();

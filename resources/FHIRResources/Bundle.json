@@ -1,0 +1,687 @@
+{
+    "entry": [
+        {
+            "fullUrl": "urn:oid:organizationId",
+            "request": {
+                "method": "POST",
+                "url": "Organization"
+            },
+            "resource": {
+                "contact": [
+                    {
+                        "telecom": [
+                            {
+                                "system": "phone",
+                                "use": "work",
+                                "value": "+1 555 234 1234"
+                            },
+                            {
+                                "system": "email",
+                                "use": "work",
+                                "value": "contact@labs.acme.org"
+                            }
+                        ]
+                    }
+                ],
+                "id": "urn:oid:organizationId",
+                "identifier": [
+                    {
+                        "system": "http://www.acme.org.au/units",
+                        "value": "ClinLab"
+                    }
+                ],
+                "name": "Clinical Lab",
+                "resourceType": "Organization",
+                "text": {
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n      \n      <p>Clinical Laboratory @ Acme Hospital. ph: +1 555 234 1234, email: \n        <a href=\"mailto:contact@labs.acme.org\">contact@labs.acme.org</a>\n      </p>\n    \n    </div>",
+                    "status": "generated"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:oid:patientId",
+            "request": {
+                "method": "POST",
+                "url": "Patient"
+            },
+            "resource": {
+                "_birthDate": {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+                            "valueDateTime": "1974-12-25T14:35:45-05:00"
+                        }
+                    ]
+                },
+                "active": true,
+                "address": [
+                    {
+                        "city": "PleasantVille",
+                        "district": "Rainbow",
+                        "line": [
+                            "534 Erewhon St"
+                        ],
+                        "period": {
+                            "start": "1974-12-25"
+                        },
+                        "postalCode": "3999",
+                        "state": "Vic",
+                        "text": "534 Erewhon St PeasantVille, Rainbow, Vic  3999",
+                        "type": "both",
+                        "use": "home"
+                    }
+                ],
+                "birthDate": "1974-12-25",
+                "contact": [
+                    {
+                        "address": {
+                            "city": "PleasantVille",
+                            "district": "Rainbow",
+                            "line": [
+                                "534 Erewhon St"
+                            ],
+                            "period": {
+                                "start": "1974-12-25"
+                            },
+                            "postalCode": "3999",
+                            "state": "Vic",
+                            "type": "both",
+                            "use": "home"
+                        },
+                        "gender": "female",
+                        "name": {
+                            "_family": {
+                                "extension": [
+                                    {
+                                        "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+                                        "valueString": "VV"
+                                    }
+                                ]
+                            },
+                            "family": "du Marché",
+                            "given": [
+                                "Bénédicte"
+                            ]
+                        },
+                        "period": {
+                            "start": "2012"
+                        },
+                        "relationship": [
+                            {
+                                "coding": [
+                                    {
+                                        "code": "N",
+                                        "system": "http://terminology.hl7.org/CodeSystem/v2-0131"
+                                    }
+                                ]
+                            }
+                        ],
+                        "telecom": [
+                            {
+                                "system": "phone",
+                                "value": "+33 (237) 998327"
+                            }
+                        ]
+                    }
+                ],
+                "deceasedBoolean": false,
+                "gender": "male",
+                "id": "urn:oid:patientId",
+                "identifier": [
+                    {
+                        "assigner": {
+                            "display": "Acme Healthcare"
+                        },
+                        "period": {
+                            "start": "2025-11-14"
+                        },
+                        "system": "urn:oid:oid:1.2.36.146.595.217.0.1",
+                        "type": {
+                            "coding": [
+                                {
+                                    "code": "MR",
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                                }
+                            ]
+                        },
+                        "use": "usual",
+                        "value": "12345"
+                    }
+                ],
+                "managingOrganization": {
+                    "reference": "urn:oid:organizationId"
+                },
+                "name": [
+                    {
+                        "family": "Chalmers",
+                        "given": [
+                            "Peter",
+                            "James"
+                        ],
+                        "use": "official"
+                    },
+                    {
+                        "given": [
+                            "Jim"
+                        ],
+                        "use": "usual"
+                    },
+                    {
+                        "family": "Windsor",
+                        "given": [
+                            "Peter",
+                            "James"
+                        ],
+                        "period": {
+                            "end": "2002"
+                        },
+                        "use": "maiden"
+                    }
+                ],
+                "resourceType": "Patient",
+                "telecom": [
+                    {
+                        "use": "home"
+                    },
+                    {
+                        "rank": 1,
+                        "system": "phone",
+                        "use": "work",
+                        "value": "(03) 5555 6473"
+                    },
+                    {
+                        "rank": 2,
+                        "system": "phone",
+                        "use": "mobile",
+                        "value": "(03) 3410 5613"
+                    },
+                    {
+                        "period": {
+                            "end": "2014"
+                        },
+                        "system": "phone",
+                        "use": "old",
+                        "value": "(03) 5555 8834"
+                    }
+                ],
+                "text": {
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p style=\"border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;\"><b>Jim </b> male, DoB: 1974-12-25 ( Medical record number: 12345 (use: USUAL, period: 2001-05-06 --&gt; (ongoing)))</p><hr/><table class=\"grid\"><tr><td style=\"background-color: #f3f5da\" title=\"Record is active\">Active:</td><td>true</td><td style=\"background-color: #f3f5da\" title=\"Known status of Patient\">Deceased:</td><td colspan=\"3\">false</td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Alternate names (see the one above)\">Alt Names:</td><td colspan=\"3\"><ul><li>Peter James Chalmers (OFFICIAL)</li><li>Peter James Windsor (MAIDEN)</li></ul></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Ways to contact the Patient\">Contact Details:</td><td colspan=\"3\"><ul><li>-unknown-(HOME)</li><li>ph: (03) 5555 6473(WORK)</li><li>ph: (03) 3410 5613(MOBILE)</li><li>ph: (03) 5555 8834(OLD)</li><li>534 Erewhon St PeasantVille, Rainbow, Vic  3999(HOME)</li></ul></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Nominated Contact: Next-of-Kin\">Next-of-Kin:</td><td colspan=\"3\"><ul><li>Bénédicte du Marché  (female)</li><li>534 Erewhon St PleasantVille Vic 3999 (HOME)</li><li><a href=\"tel:+33(237)998327\">+33 (237) 998327</a></li><li>Valid Period: 2012 --&gt; (ongoing)</li></ul></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Patient Links\">Links:</td><td colspan=\"3\"><ul><li>Managing Organization: <a href=\"organization-example-gastro.html\">Organization/1</a> &quot;Gastroenterology&quot;</li></ul></td></tr></table></div>",
+                    "status": "generated"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:oid:practitionerId",
+            "request": {
+                "method": "POST",
+                "url": "Practitioner"
+            },
+            "resource": {
+                "active": true,
+                "address": [
+                    {
+                        "city": "PleasantVille",
+                        "line": [
+                            "534 Erewhon St"
+                        ],
+                        "postalCode": "3999",
+                        "state": "Vic",
+                        "use": "home"
+                    }
+                ],
+                "id": "urn:oid:practitionerId",
+                "identifier": [
+                    {
+                        "system": "http://www.acme.org/practitioners",
+                        "value": "23"
+                    }
+                ],
+                "name": [
+                    {
+                        "family": "Careful",
+                        "given": [
+                            "Adam"
+                        ],
+                        "prefix": [
+                            "Dr"
+                        ]
+                    }
+                ],
+                "qualification": [
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "code": "BS",
+                                    "display": "Bachelor of Science",
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7"
+                                }
+                            ],
+                            "text": "Bachelor of Science"
+                        },
+                        "identifier": [
+                            {
+                                "system": "http://example.org/UniversityIdentifier",
+                                "value": "12345"
+                            }
+                        ],
+                        "issuer": {
+                            "display": "Example University"
+                        },
+                        "period": {
+                            "start": "1995"
+                        }
+                    }
+                ],
+                "resourceType": "Practitioner",
+                "text": {
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n      <p>Dr Adam Careful is a Referring Practitioner for Acme Hospital from 1-Jan 2012 to 31-Mar\n        2012</p>\n    </div>",
+                    "status": "generated"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:oid:endpointId",
+            "request": {
+                "method": "POST",
+                "url": "Endpoint"
+            },
+            "resource": {
+                "address": "http://fhir3.healthintersections.com.au/open/CarePlan",
+                "connectionType": [
+                    {
+                        "coding": [
+                            {
+                                "code": "hl7-fhir-rest",
+                                "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
+                            }
+                        ]
+                    }
+                ],
+                "contact": [
+                    {
+                        "system": "email",
+                        "use": "work",
+                        "value": "endpointmanager@example.org"
+                    }
+                ],
+                "description": "The CarePlan hub provides a test/dev environment for testing submissions",
+                "environmentType": [
+                    {
+                        "coding": [
+                            {
+                                "code": "test",
+                                "system": "http://hl7.org/fhir/endpoint-environment"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "code": "dev",
+                                "system": "http://hl7.org/fhir/endpoint-environment"
+                            }
+                        ]
+                    }
+                ],
+                "header": [
+                    "bearer-code BASGS534s4"
+                ],
+                "id": "urn:oid:endpointId",
+                "identifier": [
+                    {
+                        "system": "http://example.org/enpoint-identifier",
+                        "value": "epcp12"
+                    }
+                ],
+                "managingOrganization": {
+                    "reference": "urn:oid:organizationId"
+                },
+                "name": "Health Intersections CarePlan Hub",
+                "payload": [
+                    {
+                        "mimeType": [
+                            "application/fhir+xml"
+                        ],
+                        "type": [
+                            {
+                                "coding": [
+                                    {
+                                        "code": "CarePlan",
+                                        "system": "http://hl7.org/fhir/fhir-types"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "period": {
+                    "start": "2014-09-01"
+                },
+                "resourceType": "Endpoint",
+                "status": "active",
+                "text": {
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\tHealth Intersections CarePlan Hub<br/>\n\t\t\tCarePlans can be uploaded to/from this loccation\n\t\t</div>",
+                    "status": "generated"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:oid:conditionId",
+            "request": {
+                "method": "POST",
+                "url": "Condition"
+            },
+            "resource": {
+                "bodySite": [
+                    {
+                        "coding": [
+                            {
+                                "code": "49521004",
+                                "display": "Left external ear structure",
+                                "system": "http://snomed.info/sct"
+                            }
+                        ],
+                        "text": "Left Ear"
+                    }
+                ],
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "code": "encounter-diagnosis",
+                                "display": "Encounter Diagnosis",
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+                            },
+                            {
+                                "code": "439401001",
+                                "display": "Diagnosis",
+                                "system": "http://snomed.info/sct"
+                            }
+                        ]
+                    }
+                ],
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "code": "active",
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "code": "39065001",
+                            "display": "Burn of ear",
+                            "system": "http://snomed.info/sct"
+                        }
+                    ],
+                    "text": "Burnt Ear"
+                },
+                "id": "urn:oid:conditionId",
+                "onsetDateTime": "2012-05-24",
+                "resourceType": "Condition",
+                "severity": {
+                    "coding": [
+                        {
+                            "code": "24484000",
+                            "display": "Severe",
+                            "system": "http://snomed.info/sct"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "urn:oid:patientId"
+                },
+                "text": {
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Severe burn of left ear (Date: 24-May 2012)</div>",
+                    "status": "generated"
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "code": "confirmed",
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:oid:appointmentId",
+            "request": {
+                "method": "POST",
+                "url": "Appointment"
+            },
+            "resource": {
+                "appointmentType": {
+                    "coding": [
+                        {
+                            "code": "FOLLOWUP",
+                            "display": "A follow up visit from a previous appointment",
+                            "system": "http://terminology.hl7.org/CodeSystem/v2-0276"
+                        }
+                    ]
+                },
+                "class": [
+                    {
+                        "coding": [
+                            {
+                                "code": "AMB",
+                                "display": "ambulatory",
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+                            }
+                        ]
+                    }
+                ],
+                "created": "2013-10-10",
+                "description": "Discussion on the results of your recent MRI",
+                "end": "2013-12-10T11:00:00Z",
+                "id": "urn:oid:appointmentId",
+                "note": [
+                    {
+                        "text": "Further expand on the results of the MRI and determine the next actions that may be appropriate."
+                    }
+                ],
+                "participant": [
+                    {
+                        "actor": {
+                            "display": "Peter James Chalmers",
+                            "reference": "urn:oid:patientId"
+                        },
+                        "required": true,
+                        "status": "accepted"
+                    },
+                    {
+                        "actor": {
+                            "display": "Dr Adam Careful",
+                            "reference": "urn:oid:practitionerId"
+                        },
+                        "required": true,
+                        "status": "accepted",
+                        "type": [
+                            {
+                                "coding": [
+                                    {
+                                        "code": "ATND",
+                                        "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "actor": {
+                            "display": "South Wing, second floor",
+                            "reference": "urn:oid:locationId"
+                        },
+                        "required": true,
+                        "status": "accepted"
+                    }
+                ],
+                "patientInstruction": [
+                    {
+                        "concept": {
+                            "text": "Please avoid excessive travel (specifically flying) before this appointment"
+                        }
+                    }
+                ],
+                "reason": [
+                    {
+                        "reference": {
+                            "display": "Severe burn of left ear",
+                            "reference": "urn:oid:conditionId"
+                        }
+                    }
+                ],
+                "resourceType": "Appointment",
+                "serviceCategory": [
+                    {
+                        "coding": [
+                            {
+                                "code": "gp",
+                                "display": "General Practice",
+                                "system": "http://example.org/service-category"
+                            }
+                        ]
+                    }
+                ],
+                "serviceType": [
+                    {
+                        "concept": {
+                            "coding": [
+                                {
+                                    "code": "52",
+                                    "display": "General Discussion"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "specialty": [
+                    {
+                        "coding": [
+                            {
+                                "code": "394814009",
+                                "display": "General practice",
+                                "system": "http://snomed.info/sct"
+                            }
+                        ]
+                    }
+                ],
+                "start": "2013-12-10T09:00:00Z",
+                "status": "booked",
+                "subject": {
+                    "display": "Peter James Chalmers",
+                    "reference": "urn:oid:patientId"
+                },
+                "text": {
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Brian MRI results discussion</div>",
+                    "status": "generated"
+                }
+            }
+        },
+        {
+            "fullUrl": "urn:oid:locationId",
+            "request": {
+                "method": "POST",
+                "url": "Location"
+            },
+            "resource": {
+                "address": {
+                    "city": "Den Burg",
+                    "country": "NLD",
+                    "line": [
+                        "Galapagosweg 91, Building A"
+                    ],
+                    "postalCode": "9105 PZ",
+                    "use": "work"
+                },
+                "alias": [
+                    "BU MC, SW, F2",
+                    "Burgers University Medical Center, South Wing, second floor"
+                ],
+                "characteristic": [
+                    {
+                        "coding": [
+                            {
+                                "code": "wheelchair",
+                                "display": "Wheelchair accessible",
+                                "system": "http://hl7.org/fhir/location-characteristic"
+                            }
+                        ]
+                    }
+                ],
+                "contact": [
+                    {
+                        "telecom": [
+                            {
+                                "system": "phone",
+                                "use": "work",
+                                "value": "2328"
+                            },
+                            {
+                                "system": "fax",
+                                "use": "work",
+                                "value": "2329"
+                            },
+                            {
+                                "system": "email",
+                                "value": "second wing admissions"
+                            }
+                        ]
+                    },
+                    {
+                        "telecom": [
+                            {
+                                "system": "url",
+                                "use": "work",
+                                "value": "http://sampleorg.com/southwing"
+                            }
+                        ]
+                    }
+                ],
+                "description": "Second floor of the Old South Wing, formerly in use by Psychiatry",
+                "endpoint": [
+                    {
+                        "reference": "urn:oid:endpointId"
+                    }
+                ],
+                "form": {
+                    "coding": [
+                        {
+                            "code": "wi",
+                            "display": "Wing",
+                            "system": "http://terminology.hl7.org/CodeSystem/location-physical-type"
+                        }
+                    ]
+                },
+                "id": "urn:oid:locationId",
+                "identifier": [
+                    {
+                        "value": "B1-S.F2"
+                    }
+                ],
+                "managingOrganization": {
+                    "reference": "urn:oid:organizationId"
+                },
+                "mode": "instance",
+                "name": "South Wing, second floor",
+                "position": {
+                    "altitude": 0,
+                    "latitude": 42.25475478,
+                    "longitude": -83.6945691
+                },
+                "resourceType": "Location",
+                "status": "active",
+                "text": {
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Burgers UMC, South Wing, second floor</div>",
+                    "status": "generated"
+                }
+            }
+        }
+    ],
+    "resourceType": "Bundle",
+    "type": "transaction"
+}

@@ -110,6 +110,7 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-addons-springboot-process-svg</artifactId>
+            <version>${kogito.version}</version>
         </dependency>
         <dependency>
             <groupId>io.cloudevents</groupId>

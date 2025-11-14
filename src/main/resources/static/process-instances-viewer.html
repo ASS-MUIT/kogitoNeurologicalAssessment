@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista de Instancias del Proceso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            display: flex;
+            height: calc(100vh - 200px);
+        }
+
+        .sidebar {
+            width: 350px;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .main-view {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            background: white;
+        }
+
+        .instance-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .instance-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .instance-card.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .instance-id {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .instance-info {
+            font-size: 0.85em;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .instance-info strong {
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .status-active {
+            background: #4caf50;
+            color: white;
+        }
+
+        .status-pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .status-completed {
+            background: #2196f3;
+            color: white;
+        }
+
+        .svg-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: auto;
+        }
+
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 15px;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #764ba2;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 Neurological Assessment</h1>
+            <p class="subtitle">Vista Gráfica de Instancias de Proceso</p>
+        </header>
+        
+        <div class="content">
+            <div class="sidebar">
+                <button class="refresh-btn" onclick="loadInstances()">🔄 Actualizar Instancias</button>
+                <div id="instancesList"></div>
+            </div>
+            
+            <div class="main-view">
+                <div id="svgView">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3>Selecciona una instancia</h3>
+                        <p>Selecciona una instancia del proceso para ver su estado visual</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const credentials = btoa('doctorWho:doctorWho');
+        
+        async function fetchWithAuth(url) {
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Basic ${credentials}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response;
+        }
+
+        async function loadInstances() {
+            const listContainer = document.getElementById('instancesList');
+            listContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Cargando instancias...</p></div>';
+            
+            try {
+                const response = await fetchWithAuth(`${API_BASE}/assessment`);
+                const instances = await response.json();
+                
+                if (instances.length === 0) {
+                    listContainer.innerHTML = '<div class="empty-state"><p>No hay instancias activas</p></div>';
+                    return;
+                }
+                
+                let html = '';
+                instances.forEach((instance, index) => {
+                    html += `
+                        <div class="instance-card" onclick="loadInstanceSvg('${instance.id}', this)">
+                            <div class="instance-id">ID: ${instance.id.substring(0, 8)}...</div>
+                            <div class="instance-info"><strong>Paciente:</strong> ${instance.patientId || 'N/A'}</div>
+                            <div class="instance-info"><strong>Médico:</strong> ${instance.practitionerId || 'N/A'}</div>
+                            <div class="instance-info"><strong>Cita:</strong> ${instance.appointmentId ? instance.appointmentId.split('/').pop() : 'N/A'}</div>
+                            <span class="status-badge status-active">Activa</span>
+                        </div>
+                    `;
+                });
+                
+                listContainer.innerHTML = html;
+                
+            } catch (error) {
+                listContainer.innerHTML = `<div class="error">Error al cargar instancias: ${error.message}</div>`;
+            }
+        }
+
+        async function loadInstanceSvg(instanceId, cardElement) {
+            // Marcar la tarjeta como activa
+            document.querySelectorAll('.instance-card').forEach(card => card.classList.remove('active'));
+            cardElement.classList.add('active');
+            
+            const svgContainer = document.getElementById('svgView');
+            svgContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Cargando diagrama...</p></div>';
+            
+            try {
+                const response = await fetchWithAuth(`${API_BASE}/svg/assessment/${instanceId}`);
+                const svgContent = await response.text();
+                
+                svgContainer.innerHTML = `
+                    <div class="svg-container">
+                        <h2>Estado de la Instancia</h2>
+                        <p style="color: #666; margin-bottom: 20px;">ID: ${instanceId}</p>
+                        ${svgContent}
+                    </div>
+                `;
+                
+            } catch (error) {
+                svgContainer.innerHTML = `
+                    <div class="error">
+                        <strong>Error al cargar el diagrama SVG</strong><br>
+                        ${error.message}<br><br>
+                        <small>Asegúrate de que el servidor esté ejecutándose con el addon kogito-addons-springboot-process-svg habilitado.</small>
+                    </div>
+                `;
+            }
+        }
+
+        // Cargar instancias al iniciar
+        window.addEventListener('DOMContentLoaded', loadInstances);
+        
+        // Auto-refresh cada 30 segundos
+        setInterval(loadInstances, 30000);
+    </script>
+</body>
+</html>
