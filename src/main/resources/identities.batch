@@ -1,4 +1,0 @@
-user create "kogito" -p "kogito" -g admin
-user create "observer" -p "observer" 
-user create "deployer" -p "deployer" 
-user create "monitor" -p "monitor" -g monitor
