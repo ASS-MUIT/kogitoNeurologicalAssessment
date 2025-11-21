@@ -217,7 +217,7 @@
                 "url": "Practitioner"
             },
             "resource": {
-                "active": true,
+                "active": true,                
                 "address": [
                     {
                         "city": "PleasantVille",
@@ -233,8 +233,12 @@
                 "identifier": [
                     {
                         "system": "http://www.acme.org/practitioners",
-                        "value": "23"
-                    }
+                        "value": "doctorWho"
+                    },
+                    {
+                     "system": "kogito",
+                     "value": "doctorWho"
+                    } 
                 ],
                 "name": [
                     {

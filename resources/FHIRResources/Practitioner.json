@@ -8,7 +8,11 @@
   "identifier" : [{
     "system" : "http://www.acme.org/practitioners",
     "value" : "23"
-  }],
+  },
+  {
+    "system": "kogito",
+    "value": "doctorWho"
+  } ],
   "active" : true,
   "name" : [{
     "family" : "Careful",
