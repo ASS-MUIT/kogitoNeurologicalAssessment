@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_OSDsoKK1ED6CBdNmCZvL7Q" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_mDzdYLHFED6Ht4KzV_hL8Q" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="_dn4Item" structureRef="us.dit.muit.hsa.neurologicalassessment.entities.DN4"/>
   <bpmn2:itemDefinition id="_appointmentIdItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_practitionerIdItem" structureRef="String"/>
@@ -18,6 +18,7 @@
   <bpmn2:itemDefinition id="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_NotStartedNotifyInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_NotCompletedNotifyInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4InputXItem" structureRef="us.dit.muit.hsa.neurologicalassessment.entities.DN4"/>
+  <bpmn2:itemDefinition id="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_ActorIdInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4OutputXItem" structureRef="us.dit.muit.hsa.neurologicalassessment.entities.DN4"/>
   <bpmn2:itemDefinition id="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_InMessageType"/>
   <bpmn2:itemDefinition id="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_OutMessageType"/>
@@ -25,8 +26,8 @@
   <bpmn2:itemDefinition id="__8C18F2A9-65C9-46A3-B445-0F44021BDD0D_appointmentDTOOutputXItem" structureRef="us.dit.muit.hsa.neurologicalassessment.entities.AppointmentDTO"/>
   <bpmn2:itemDefinition id="__AC30C2C0-10A2-4EA1-B723-3D30D35CC77C_eventOutputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="appointmentsType" structureRef="String"/>
-  <bpmn2:itemDefinition id="_8E12455D-E82D-4923-B3E5-A1746C181875" structureRef=""/>
-  <bpmn2:itemDefinition id="_B213A7DC-72E4-4D69-BF4E-5FB2B2877F45" structureRef=""/>
+  <bpmn2:itemDefinition id="_C4E8CD1E-105D-4C0F-A037-7EB6B0BD9424" structureRef=""/>
+  <bpmn2:itemDefinition id="_05B83E7D-AF66-4DBA-B078-AB545D3CC431" structureRef=""/>
   <bpmn2:message id="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_InMessage" itemRef="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_InMessageType"/>
   <bpmn2:message id="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_OutMessage" itemRef="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_OutMessageType"/>
   <bpmn2:interface id="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_ServiceInterface" name="us.dit.muit.hsa.neurologicalassessment.services.AppointmentDAOService" implementationRef="us.dit.muit.hsa.neurologicalassessment.services.AppointmentDAOService">
@@ -35,9 +36,9 @@
       <bpmn2:outMessageRef>_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_OutMessage</bpmn2:outMessageRef>
     </bpmn2:operation>
   </bpmn2:interface>
-  <bpmn2:message id="_OSUyYKK1ED6CBdNmCZvL7Q" itemRef="appointmentsType" name="appointments"/>
-  <bpmn2:collaboration id="_46857AEB-7770-478D-BF37-1186E1C2A898" name="Default Collaboration">
-    <bpmn2:participant id="_24922296-21BD-4789-9863-437BA7A5DC04" name="Pool Participant" processRef="neurologicalassessment.assessment"/>
+  <bpmn2:message id="_mD1SkLHFED6Ht4KzV_hL8Q" itemRef="appointmentsType" name="appointments"/>
+  <bpmn2:collaboration id="_C5FFEBAB-146D-422F-B38A-28CA34DDB05C" name="Default Collaboration">
+    <bpmn2:participant id="_86FF20E3-F152-4B0B-A2AB-848603CF8B5D" name="Pool Participant" processRef="neurologicalassessment.assessment"/>
   </bpmn2:collaboration>
   <bpmn2:process id="neurologicalassessment.assessment" drools:packageName="us.dit.muit.hsa.neurologicalassessment" drools:version="1.0" drools:adHoc="false" name="assessment" isExecutable="true" processType="Public">
     <bpmn2:extensionElements>
@@ -93,7 +94,7 @@
       <bpmn2:outputSet>
         <bpmn2:dataOutputRefs>_AC30C2C0-10A2-4EA1-B723-3D30D35CC77C_eventOutputX</bpmn2:dataOutputRefs>
       </bpmn2:outputSet>
-      <bpmn2:messageEventDefinition drools:msgref="appointments" messageRef="_OSUyYKK1ED6CBdNmCZvL7Q"/>
+      <bpmn2:messageEventDefinition drools:msgref="appointments" messageRef="_mD1SkLHFED6Ht4KzV_hL8Q"/>
     </bpmn2:startEvent>
     <bpmn2:serviceTask id="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D" drools:serviceimplementation="Java" drools:serviceinterface="us.dit.muit.hsa.neurologicalassessment.services.AppointmentDAOService" drools:serviceoperation="getAppointmentAttributes" name="Solving Appointment Data" implementation="Java" operationRef="_8C18F2A9-65C9-46A3-B445-0F44021BDD0D_ServiceOperation">
       <bpmn2:extensionElements>
@@ -153,12 +154,14 @@ System.out.println("Scale Result is "+ dn4.getScore());</bpmn2:script>
       <bpmn2:ioSpecification>
         <bpmn2:dataInput id="_5DC23A05-EA2B-42D9-A75F-A293C02B5775_TaskNameInputX" drools:dtype="Object" itemSubjectRef="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_TaskNameInputXItem" name="TaskName"/>
         <bpmn2:dataInput id="_5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4InputX" drools:dtype="us.dit.muit.hsa.neurologicalassessment.entities.DN4" itemSubjectRef="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4InputXItem" name="dn4"/>
+        <bpmn2:dataInput id="_5DC23A05-EA2B-42D9-A75F-A293C02B5775_ActorIdInputX" drools:dtype="String" itemSubjectRef="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_ActorIdInputXItem" name="ActorId"/>
         <bpmn2:dataInput id="_5DC23A05-EA2B-42D9-A75F-A293C02B5775_SkippableInputX" drools:dtype="Object" itemSubjectRef="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_SkippableInputXItem" name="Skippable"/>
         <bpmn2:dataInput id="_5DC23A05-EA2B-42D9-A75F-A293C02B5775_GroupIdInputX" drools:dtype="Object" itemSubjectRef="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_GroupIdInputXItem" name="GroupId"/>
         <bpmn2:dataOutput id="_5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4OutputX" drools:dtype="us.dit.muit.hsa.neurologicalassessment.entities.DN4" itemSubjectRef="__5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4OutputXItem" name="dn4"/>
         <bpmn2:inputSet>
           <bpmn2:dataInputRefs>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_TaskNameInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4InputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_ActorIdInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_SkippableInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_GroupIdInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
@@ -176,6 +179,10 @@ System.out.println("Scale Result is "+ dn4.getScore());</bpmn2:script>
       <bpmn2:dataInputAssociation>
         <bpmn2:sourceRef>dn4</bpmn2:sourceRef>
         <bpmn2:targetRef>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_dn4InputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:sourceRef>practitionerId</bpmn2:sourceRef>
+        <bpmn2:targetRef>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_ActorIdInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation>
         <bpmn2:targetRef>_5DC23A05-EA2B-42D9-A75F-A293C02B5775_SkippableInputX</bpmn2:targetRef>
@@ -426,7 +433,7 @@ System.out.println("Scale Result is "+ dn4.getScore());</bpmn2:script>
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_OSDsoKK1ED6CBdNmCZvL7Q</bpmn2:source>
-    <bpmn2:target>_OSDsoKK1ED6CBdNmCZvL7Q</bpmn2:target>
+    <bpmn2:source>_mDzdYLHFED6Ht4KzV_hL8Q</bpmn2:source>
+    <bpmn2:target>_mDzdYLHFED6Ht4KzV_hL8Q</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

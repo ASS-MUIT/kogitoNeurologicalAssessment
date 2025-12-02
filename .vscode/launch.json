@@ -6,9 +6,15 @@
     "configurations": [
         {
             "type": "java",
+            "name": "NeurologicalAssessment",
+            "request": "launch",
+            "mainClass": "us.dit.muit.hsa.neurologicalassessment.NeurologicalAssessment",
+            "projectName": "neurological-assessment"
+        },
+        {
+            "type": "java",
             "name": "Kogito Debug (Maven - Attach)",
             "request": "attach",
-            // Puerto predeterminado que usa Spring Boot para la depuración remota
             "hostName": "localhost",
             "port": 5005
         }

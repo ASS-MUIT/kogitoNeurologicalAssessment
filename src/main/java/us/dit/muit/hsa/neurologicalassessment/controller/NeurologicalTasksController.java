@@ -22,6 +22,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 
 import us.dit.muit.hsa.neurologicalassessment.entities.DN4;
 
@@ -117,11 +122,57 @@ public class NeurologicalTasksController {
 
         try {
             List<Map<String, Object>> allTasks = new ArrayList<>();
+            String baseUrl = "http://localhost:8080";
 
             assessmentProcess.instances().stream()
                     .filter(pi -> pi.status() == ProcessInstance.STATE_ACTIVE)
                     .forEach(pi -> {
                         logger.debug("Checking process instance: {}", pi.id());
+                        logger.debug("Process instance status: {}", pi.status());
+                        logger.debug("Process instance variables: {}", pi.variables());
+                        logger.debug("WorkItems size: {}", pi.workItems().size());
+
+                        // Llamada HTTP al endpoint de Kogito
+                        String url = String.format("%s/assessment/%s/tasks?user=%s", baseUrl, pi.id(), userName);
+
+                        try {
+                            RestTemplate restTemplate = new RestTemplate();
+
+                            HttpHeaders headers = new HttpHeaders();
+                            headers.setBasicAuth("wbadmin", "wbadmin");
+
+                            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+                            @SuppressWarnings("unchecked")
+                            ResponseEntity<List<Map<String, Object>>> taskResponse = (ResponseEntity<List<Map<String, Object>>>) (ResponseEntity<?>) restTemplate
+                                    .exchange(
+                                            url,
+                                            HttpMethod.GET,
+                                            entity,
+                                            List.class);
+
+                            if (taskResponse.getStatusCode() == HttpStatus.OK && taskResponse.getBody() != null) {
+
+                                logger.debug("Found {} tasks via HTTP", taskResponse.getBody());
+                                taskResponse.getBody().forEach(task -> {
+                                    logger.debug("Task via HTTP: {}", task);
+                                    Map<String, Object> map = new HashMap<String, Object>();
+
+                                    map.put("id", task.get("id"));
+                                    map.put("name", task.get("name"));
+                                    map.put("processInstanceId", pi.id());
+                                    map.put("phase", task.get("phase"));
+                                    map.put("phaseStatus", task.get("phaseStatus"));
+                                    map.put("parameters", task.get("parameters"));
+                                    allTasks.add(map);
+                                });
+                            }
+
+                        } catch (Exception e) {
+                            logger.error("Error calling Kogito endpoint: {}", e.getMessage(), e);
+                        }
+
+                        // Procesamiento directo de workItems
                         pi.workItems().stream()
                                 .peek(wi -> logger.debug("Work item found: id={}, name={}, phase={}, phaseStatus={}",
                                         wi.getId(), wi.getName(), wi.getPhase(), wi.getPhaseStatus()))
@@ -136,7 +187,7 @@ public class NeurologicalTasksController {
                                 });
                     });
 
-            logger.info("Total tasks found for user {}: {}", userName, allTasks.size());
+            logger.info("Total potential tasks found for user {}: {}", userName, allTasks.size());
 
             Map<String, Object> response = new HashMap<>();
             response.put("tasks", allTasks);
@@ -290,17 +341,9 @@ public class NeurologicalTasksController {
             @RequestBody DN4 dn4) {
 
         String userName = identityProvider.getName();
-        List<String> userRoles = new ArrayList<>(identityProvider.getRoles());
 
         logger.info("=== Completing task {} for process {} by user {} ===", taskId, processInstanceId, userName);
         logger.debug("DN4 data received: {}", dn4);
-
-        if (assessmentProcess == null) {
-            logger.error("Assessment process not found");
-            Map<String, Object> error = new HashMap<>();
-            error.put("error", "Assessment process not initialized");
-            return ResponseEntity.status(500).body(error);
-        }
 
         try {
             ProcessInstance<?> instance = assessmentProcess.instances()
@@ -315,13 +358,63 @@ public class NeurologicalTasksController {
                 return ResponseEntity.status(404).body(error);
             }
 
-            // Find the task
-            WorkItem task = instance.workItems().stream()
-                    .filter(wi -> wi.getId().equals(taskId))
-                    .findFirst()
-                    .orElse(null);
+            /*
+             * Find the task
+             * WorkItem task = instance.workItems().stream()
+             * .filter(wi -> wi.getId().equals(taskId))
+             * .findFirst()
+             * .orElse(null);
+             */
+            // Buscar la tarea usando REST API
+            String baseUrl = "http://localhost:8080";
+            String url = String.format("%s/assessment/%s/tasks?user=%s", baseUrl, processInstanceId, userName);
 
-            if (task == null) {
+            boolean taskFound = false;
+            boolean taskBelongsToUser = false;
+
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setBasicAuth("wbadmin", "wbadmin");
+
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+
+                @SuppressWarnings("unchecked")
+                ResponseEntity<List<Map<String, Object>>> taskResponse = (ResponseEntity<List<Map<String, Object>>>) (ResponseEntity<?>) restTemplate
+                        .exchange(
+                                url,
+                                HttpMethod.GET,
+                                entity,
+                                List.class);
+                if (taskResponse.getStatusCode() == HttpStatus.OK && taskResponse.getBody() != null) {
+                    // Buscar el taskId específico en la lista
+                    for (Map<String, Object> task : taskResponse.getBody()) {
+                        if (taskId.equals(task.get("id"))) {
+                            taskFound = true;
+                            taskBelongsToUser = true;
+                            logger.info("Task {} found and belongs to user {}", taskId, userName);
+                            break;
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                logger.error("Error verifying task via REST: {}", e.getMessage(), e);
+                // Si falla REST, intentar con workItems como fallback
+                WorkItem task = instance.workItems().stream()
+                        .filter(wi -> wi.getId().equals(taskId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (task != null) {
+                    taskFound = true;
+                    taskBelongsToUser = true;
+
+                    // taskBelongsToUser = isTaskAssignedToUser(task, userName, userRoles);
+                }
+            }
+            if (!taskFound) {
                 logger.warn("Task {} not found in process instance {}", taskId, processInstanceId);
                 Map<String, Object> error = new HashMap<>();
                 error.put("error", "Task not found");
@@ -331,7 +424,7 @@ public class NeurologicalTasksController {
             }
 
             // Verify user has permission to complete this task
-            if (!isTaskAssignedToUser(task, userName, userRoles)) {
+            if (!taskBelongsToUser) {
                 logger.warn("User {} not authorized to complete task {}", userName, taskId);
                 Map<String, Object> error = new HashMap<>();
                 error.put("error", "Not authorized to complete this task");
@@ -340,14 +433,30 @@ public class NeurologicalTasksController {
                 return ResponseEntity.status(403).body(error);
             }
 
-            // Complete the task with DN4 data
-            Map<String, Object> outputData = new HashMap<>();
-            outputData.put("dn4", dn4);
+            // Complete the task with DN4 data using REST API
+            /// assessment/{id}/painAssessment/{taskId}
+            String completeUrl = String.format("%s/assessment/%s/painAssessment/%s?user=%s&group=practitioners",
+                    baseUrl, processInstanceId, taskId, userName);
 
-            logger.info("Completing task {} with DN4 data", taskId);
-            instance.completeWorkItem(taskId, outputData);
+            Map<String, Object> taskData = new HashMap<>();
+            taskData.put("dn4", dn4);
 
-            logger.info("âœ“ Task {} completed successfully by user {}", taskId, userName);
+            HttpHeaders completeHeaders = new HttpHeaders();
+            completeHeaders.setBasicAuth("wbadmin", "wbadmin");
+            completeHeaders.set("Content-Type", "application/json");
+
+            HttpEntity<Map<String, Object>> completeEntity = new HttpEntity<>(taskData, completeHeaders);
+
+            logger.info("Completing task {} with DN4 data via REST API: {}", taskId, completeUrl);
+
+            RestTemplate completeRestTemplate = new RestTemplate();
+            completeRestTemplate.exchange(
+                    completeUrl,
+                    HttpMethod.POST,
+                    completeEntity,
+                    Map.class);
+
+            logger.info("✓ Task {} completed successfully by user {}", taskId, userName);
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Task completed successfully");

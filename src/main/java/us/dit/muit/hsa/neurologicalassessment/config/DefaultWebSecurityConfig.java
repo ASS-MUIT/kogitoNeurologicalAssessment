@@ -33,16 +33,19 @@ public class DefaultWebSecurityConfig {
         // Nota: En Kogito, los grupos (GroupId) no llevan el prefijo ROLE_
         // Por eso usamos .authorities() en lugar de .roles()
         auth.inMemoryAuthentication()
-            .withUser("doctorWho").password("doctorWho")
-            .authorities("practitioner");
-        
+                .withUser("doctorWho").password("doctorWho")
+                .authorities("practitioner");
+
         auth.inMemoryAuthentication()
-            .withUser("mary").password("mary")
-            .authorities("patient");
-        
+                .withUser("mary").password("mary")
+                .authorities("patient");
+
         auth.inMemoryAuthentication()
-            .withUser("paul").password("paul")
-            .authorities("practitioner");
+                .withUser("paul").password("paul")
+                .authorities("practitioner");
+        auth.inMemoryAuthentication()
+                .withUser("wbadmin").password("wbadmin")
+                .authorities("rest-admin");
     }
 
     @Bean
