@@ -464,4 +464,4 @@ This project is provided as-is for educational purposes. Please check with the p
 
 ---
 
-**Built with ❤️ using Kogito, Spring Boot, Kafka and FHIR**
+**Built with ❤️ for students in HSA, MUIT-US, using Kogito, Spring Boot, Kafka and FHIR**
